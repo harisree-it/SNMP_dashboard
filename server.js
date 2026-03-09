@@ -246,15 +246,7 @@ app.get('/api/devices', (req, res) => {
             status: state.status,
             lastUpdate: state.lastUpdate,
             sysDescr: state.sysDescr,
-            sysUpTime: state.sysUpTime,
-            mpptLive: state.mpptLive,
-            outputPowerMppt: state.outputPowerMppt,
-            rectifierLive: state.rectifierLive,
-            outputPowerRect: state.outputPowerRect,
-            poeLive: state.poeLive,
-            totalVoltageBms: state.totalVoltageBms,
-            chargingCurrent: state.chargingCurrent,
-            dischargingCurrent: state.dischargingCurrent
+            sysUpTime: state.sysUpTime
         };
     });
     res.json(summary);

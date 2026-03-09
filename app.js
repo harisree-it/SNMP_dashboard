@@ -360,43 +360,6 @@ class DashboardApp {
         this.setText('dash-soc', currentSoc);
         document.getElementById('dash-soc-bar').style.width = `${currentSoc}%`;
 
-        // Power Utilization Bar Chart Logic
-        const pwrMppt = this.state.mpptLive ? this.state.outputPowerMppt : 0;
-        const pwrGrid = this.state.rectifierLive ? this.state.outputPowerRect : 0;
-        const pwrPoe = this.state.poeLive ? (parseFloat(poeCur) * parseFloat(busVoltage)) : 0;
-        const pwrBatt = (!isCharging && battCur > 0) ? (battCur * parseFloat(busVoltage)) : 0;
-
-        // Find the max value to scale the chart dynamically (minimum 100W scale to avoid jumpiness)
-        const maxPwr = Math.max(100, pwrMppt, pwrGrid, pwrPoe, pwrBatt);
-
-        // Update Text Values
-        this.setText('bar-val-mppt', Math.round(pwrMppt) + ' W');
-        this.setText('bar-val-grid', Math.round(pwrGrid) + ' W');
-        this.setText('bar-val-poe', Math.round(pwrPoe) + ' W');
-        this.setText('bar-val-batt', Math.round(pwrBatt) + ' W');
-
-        // Update Bar Heights (Percentages)
-        const mpptPct = (pwrMppt / maxPwr) * 100;
-        const gridPct = (pwrGrid / maxPwr) * 100;
-        const poePct = (pwrPoe / maxPwr) * 100;
-        const battPct = (pwrBatt / maxPwr) * 100;
-
-        const setBarHeight = (id, pct) => {
-            const el = document.getElementById(id);
-            if (el) el.style.height = `${Math.min(100, Math.max(0, pct))}%`;
-        };
-
-        setBarHeight('bar-mppt', mpptPct);
-        setBarHeight('bar-grid', gridPct);
-        setBarHeight('bar-poe', poePct);
-        setBarHeight('bar-batt', battPct);
-
-        // Update Y-Axis Labels to reflect the dynamic maximum scale
-        this.setText('y-axis-100', Math.round(maxPwr) + 'W');
-        this.setText('y-axis-75', Math.round(maxPwr * 0.75) + 'W');
-        this.setText('y-axis-50', Math.round(maxPwr * 0.50) + 'W');
-        this.setText('y-axis-25', Math.round(maxPwr * 0.25) + 'W');
-
 
         // --- BMS TAB ---
         this.setText('bms-totalCapacity', (this.state.totalCapacity / 100).toFixed(2) + ' Ah');
