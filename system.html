@@ -280,214 +280,266 @@
                     </div>
                 </div>
 
+                <!-- Power Utilization Bar Chart -->
+                <div class="glass-widget mt-2">
+                    <div class="widget-header" style="border-bottom: none; margin-bottom: 0;">
+                        <h3
+                            style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem;">
+                            Power Utilization By Source</h3>
+                    </div>
+                    <div class="bar-chart-container">
+                        <!-- Y-Axis Labels -->
+                        <div class="bar-chart-y-axis">
+                            <span id="y-axis-100">100%</span>
+                            <span id="y-axis-75">75%</span>
+                            <span id="y-axis-50">50%</span>
+                            <span id="y-axis-25">25%</span>
+                            <span id="y-axis-0">0</span>
+                        </div>
+
+                        <!-- Bars -->
+                        <div class="bar-chart-bars">
+                            <div class="bar-col">
+                                <div class="bar-track">
+                                    <div class="bar-fill" id="bar-mppt" style="height: 0%"></div>
+                                </div>
+                                <div class="bar-label">MPPT</div>
+                                <div class="bar-val font-mono" id="bar-val-mppt">0 W</div>
+                            </div>
+                            <div class="bar-col">
+                                <div class="bar-track">
+                                    <div class="bar-fill" id="bar-grid" style="height: 0%"></div>
+                                </div>
+                                <div class="bar-label">Grid</div>
+                                <div class="bar-val font-mono" id="bar-val-grid">0 W</div>
+                            </div>
+                            <div class="bar-col">
+                                <div class="bar-track">
+                                    <div class="bar-fill" id="bar-poe" style="height: 0%"></div>
+                                </div>
+                                <div class="bar-label">PoE</div>
+                                <div class="bar-val font-mono" id="bar-val-poe">0 W</div>
+                            </div>
+                            <div class="bar-col">
+                                <div class="bar-track">
+                                    <div class="bar-fill" id="bar-batt" style="height: 0%"></div>
+                                </div>
+                                <div class="bar-label">Battery</div>
+                                <div class="bar-val font-mono" id="bar-val-batt">0 W</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
-                <!-- BMS TAB -->
-                <div class="tab-pane" id="tab-bms">
-                    <div class="glass-widget mb-2">
+
+            <!-- BMS TAB -->
+            <div class="tab-pane" id="tab-bms">
+                <div class="glass-widget mb-2">
+                    <div class="widget-header">
+                        <h3>Battery Specifications</h3>
+                    </div>
+                    <div class="specs-grid">
+                        <div class="spec-row"><span>Total Capacity:</span> <strong id="bms-totalCapacity">--</strong>
+                        </div>
+                        <div class="spec-row"><span>Discharge Cycles:</span> <strong id="bms-dischargeCycle">--</strong>
+                        </div>
+                        <div class="spec-row"><span>Production Date:</span> <strong id="bms-productionDate">--</strong>
+                        </div>
+                        <div class="spec-row"><span>Software Version:</span> <strong
+                                id="bms-softwareVersion">--</strong></div>
+                        <div class="spec-row"><span>Num Battery Strings:</span> <strong
+                                id="bms-numberOfBattery">--</strong></div>
+                        <div class="spec-row"><span>Protection Status:</span> <strong
+                                id="bms-protectionStatus">--</strong></div>
+                        <div class="spec-row"><span>MOSFET Status:</span> <strong
+                                id="bms-mosfetControlStatus">--</strong></div>
+                    </div>
+                </div>
+
+                <div class="bms-split">
+                    <div class="glass-widget">
                         <div class="widget-header">
-                            <h3>Battery Specifications</h3>
+                            <h3>Cell Voltages (V)</h3>
+                        </div>
+                        <div class="cell-grid" id="bms-cell-grid">
+                            <!-- Generated by JS -->
+                        </div>
+                    </div>
+
+                    <div class="glass-widget">
+                        <div class="widget-header">
+                            <h3>NTC Temperatures</h3>
+                        </div>
+                        <div class="ntc-grid" id="bms-ntc-grid">
+                            <!-- Generated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RECTIFIER TAB -->
+            <div class="tab-pane" id="tab-rectifier">
+                <div class="widget-grid">
+                    <div class="glass-widget stat-card">
+                        <div class="stat-info">
+                            <h3>AC Input Voltage</h3>
+                            <div class="stat-value"><span id="rect-acIpVoltageRect">0</span> V</div>
+                        </div>
+                    </div>
+                    <div class="glass-widget stat-card">
+                        <div class="stat-info">
+                            <h3>DC Output Voltage</h3>
+                            <div class="stat-value"><span id="rect-dcOpVoltageRect">0</span> V</div>
+                        </div>
+                    </div>
+                    <div class="glass-widget stat-card">
+                        <div class="stat-info">
+                            <h3>DC Output Current</h3>
+                            <div class="stat-value"><span id="rect-dcOpCurRect">0</span> A</div>
+                        </div>
+                    </div>
+                    <div class="glass-widget stat-card">
+                        <div class="stat-info">
+                            <h3>Max Deliverable Power</h3>
+                            <div class="stat-value"><span id="rect-outputPowerRect">0</span> W</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-widget mt-2">
+                    <div class="widget-header">
+                        <h3>Rectifier Thermals</h3>
+                    </div>
+                    <div class="thermal-grid">
+                        <div class="thermal-gauge">
+                            <div class="gauge-value" id="rect-srTemp">0°C</div>
+                            <span>SR Temp</span>
+                        </div>
+                        <div class="thermal-gauge">
+                            <div class="gauge-value" id="rect-llcTemp">0°C</div>
+                            <span>LLC Temp</span>
+                        </div>
+                        <div class="thermal-gauge">
+                            <div class="gauge-value" id="rect-pfcTemp">0°C</div>
+                            <span>PFC Temp</span>
+                        </div>
+                        <div class="thermal-gauge">
+                            <div class="gauge-value" id="rect-ambientTempRect">0°C</div>
+                            <span>Ambient</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MPPT TAB -->
+            <div class="tab-pane" id="tab-mppt">
+                <div class="widget-grid mb-2">
+                    <div class="glass-widget stat-card">
+                        <div class="stat-info">
+                            <h3>Input Voltage</h3>
+                            <div class="stat-value"><span id="mppt-acIpVoltageMppt">0</span> V</div>
+                        </div>
+                    </div>
+                    <div class="glass-widget stat-card">
+                        <div class="stat-info">
+                            <h3>Input Current</h3>
+                            <div class="stat-value"><span id="mppt-acIpCurMppt">0</span> A</div>
+                        </div>
+                    </div>
+                    <div class="glass-widget stat-card">
+                        <div class="stat-info">
+                            <h3>DC Output Voltage</h3>
+                            <div class="stat-value"><span id="mppt-dcOpVoltageMppt">0</span> V</div>
+                        </div>
+                    </div>
+                    <div class="glass-widget stat-card">
+                        <div class="stat-info">
+                            <h3>DC Output Current</h3>
+                            <div class="stat-value"><span id="mppt-dcOpCurMppt">0</span> A</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-widget w-half">
+                    <div class="widget-header">
+                        <h3>MPPT Thermals</h3>
+                    </div>
+                    <div class="thermal-grid">
+                        <div class="thermal-gauge">
+                            <div class="gauge-value" id="mppt-srTempMppt">0°C</div>
+                            <span>SR Temp</span>
+                        </div>
+                        <div class="thermal-gauge">
+                            <div class="gauge-value" id="mppt-llcTempMppt">0°C</div>
+                            <span>LLC Temp</span>
+                        </div>
+                        <div class="thermal-gauge">
+                            <div class="gauge-value" id="mppt-pfcTempMppt">0°C</div>
+                            <span>PFC Temp</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTROL TAB -->
+            <div class="tab-pane" id="tab-control">
+                <div class="bms-split">
+                    <div class="glass-widget">
+                        <div class="widget-header">
+                            <h3>LED Controls</h3>
+                        </div>
+                        <div class="control-grid">
+                            <div class="control-item">
+                                <span>LED D5 (LATA2)</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="ctrl-ledD5">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="control-item">
+                                <span>LED D6 (LATA3)</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="ctrl-ledD6">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="control-item">
+                                <span>LED D7 (LATA4)</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="ctrl-ledD7">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-widget">
+                        <div class="widget-header">
+                            <h3>Analog & Digital IO</h3>
                         </div>
                         <div class="specs-grid">
-                            <div class="spec-row"><span>Total Capacity:</span> <strong
-                                    id="bms-totalCapacity">--</strong></div>
-                            <div class="spec-row"><span>Discharge Cycles:</span> <strong
-                                    id="bms-dischargeCycle">--</strong></div>
-                            <div class="spec-row"><span>Production Date:</span> <strong
-                                    id="bms-productionDate">--</strong></div>
-                            <div class="spec-row"><span>Software Version:</span> <strong
-                                    id="bms-softwareVersion">--</strong></div>
-                            <div class="spec-row"><span>Num Battery Strings:</span> <strong
-                                    id="bms-numberOfBattery">--</strong></div>
-                            <div class="spec-row"><span>Protection Status:</span> <strong
-                                    id="bms-protectionStatus">--</strong></div>
-                            <div class="spec-row"><span>MOSFET Status:</span> <strong
-                                    id="bms-mosfetControlStatus">--</strong></div>
-                        </div>
-                    </div>
-
-                    <div class="bms-split">
-                        <div class="glass-widget">
-                            <div class="widget-header">
-                                <h3>Cell Voltages (V)</h3>
-                            </div>
-                            <div class="cell-grid" id="bms-cell-grid">
-                                <!-- Generated by JS -->
-                            </div>
-                        </div>
-
-                        <div class="glass-widget">
-                            <div class="widget-header">
-                                <h3>NTC Temperatures</h3>
-                            </div>
-                            <div class="ntc-grid" id="bms-ntc-grid">
-                                <!-- Generated by JS -->
+                            <div class="spec-row"><span>Push Button (8-bit):</span> <strong
+                                    id="ctrl-pushButton">--</strong></div>
+                            <div class="spec-row"><span>Analog Pot 0 (10-bit):</span> <strong
+                                    id="ctrl-analogPot0">--</strong></div>
+                            <div class="spec-row"><span>Analog Pot 1 (10-bit):</span> <strong
+                                    id="ctrl-analogPot1">--</strong></div>
+                            <div class="spec-row"><span>Static Var:</span> <strong id="ctrl-statVar"
+                                    class="font-mono">--</strong></div>
+                            <div class="spec-row">
+                                <span>LCD Display:</span>
+                                <input type="text" id="ctrl-lcdDisplay" class="lcd-input" maxlength="15"
+                                    value="Hello World">
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- RECTIFIER TAB -->
-                <div class="tab-pane" id="tab-rectifier">
-                    <div class="widget-grid">
-                        <div class="glass-widget stat-card">
-                            <div class="stat-info">
-                                <h3>AC Input Voltage</h3>
-                                <div class="stat-value"><span id="rect-acIpVoltageRect">0</span> V</div>
-                            </div>
-                        </div>
-                        <div class="glass-widget stat-card">
-                            <div class="stat-info">
-                                <h3>DC Output Voltage</h3>
-                                <div class="stat-value"><span id="rect-dcOpVoltageRect">0</span> V</div>
-                            </div>
-                        </div>
-                        <div class="glass-widget stat-card">
-                            <div class="stat-info">
-                                <h3>DC Output Current</h3>
-                                <div class="stat-value"><span id="rect-dcOpCurRect">0</span> A</div>
-                            </div>
-                        </div>
-                        <div class="glass-widget stat-card">
-                            <div class="stat-info">
-                                <h3>Output Power</h3>
-                                <div class="stat-value"><span id="rect-outputPowerRect">0</span> W</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="glass-widget mt-2">
-                        <div class="widget-header">
-                            <h3>Rectifier Thermals</h3>
-                        </div>
-                        <div class="thermal-grid">
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="rect-srTemp">0°C</div>
-                                <span>SR Temp</span>
-                            </div>
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="rect-llcTemp">0°C</div>
-                                <span>LLC Temp</span>
-                            </div>
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="rect-pfcTemp">0°C</div>
-                                <span>PFC Temp</span>
-                            </div>
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="rect-ambientTempRect">0°C</div>
-                                <span>Ambient</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MPPT TAB -->
-                <div class="tab-pane" id="tab-mppt">
-                    <div class="widget-grid mb-2">
-                        <div class="glass-widget stat-card">
-                            <div class="stat-info">
-                                <h3>Input Voltage</h3>
-                                <div class="stat-value"><span id="mppt-acIpVoltageMppt">0</span> V</div>
-                            </div>
-                        </div>
-                        <div class="glass-widget stat-card">
-                            <div class="stat-info">
-                                <h3>AC Input Current</h3>
-                                <div class="stat-value"><span id="mppt-acIpCurMppt">0</span> A</div>
-                            </div>
-                        </div>
-                        <div class="glass-widget stat-card">
-                            <div class="stat-info">
-                                <h3>DC Output Voltage</h3>
-                                <div class="stat-value"><span id="mppt-dcOpVoltageMppt">0</span> V</div>
-                            </div>
-                        </div>
-                        <div class="glass-widget stat-card">
-                            <div class="stat-info">
-                                <h3>DC Output Current</h3>
-                                <div class="stat-value"><span id="mppt-dcOpCurMppt">0</span> A</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="glass-widget w-half">
-                        <div class="widget-header">
-                            <h3>MPPT Thermals</h3>
-                        </div>
-                        <div class="thermal-grid">
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="mppt-srTempMppt">0°C</div>
-                                <span>SR Temp</span>
-                            </div>
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="mppt-llcTempMppt">0°C</div>
-                                <span>LLC Temp</span>
-                            </div>
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="mppt-pfcTempMppt">0°C</div>
-                                <span>PFC Temp</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CONTROL TAB -->
-                <div class="tab-pane" id="tab-control">
-                    <div class="bms-split">
-                        <div class="glass-widget">
-                            <div class="widget-header">
-                                <h3>LED Controls</h3>
-                            </div>
-                            <div class="control-grid">
-                                <div class="control-item">
-                                    <span>LED D5 (LATA2)</span>
-                                    <label class="switch">
-                                        <input type="checkbox" id="ctrl-ledD5">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                                <div class="control-item">
-                                    <span>LED D6 (LATA3)</span>
-                                    <label class="switch">
-                                        <input type="checkbox" id="ctrl-ledD6">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                                <div class="control-item">
-                                    <span>LED D7 (LATA4)</span>
-                                    <label class="switch">
-                                        <input type="checkbox" id="ctrl-ledD7">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="glass-widget">
-                            <div class="widget-header">
-                                <h3>Analog & Digital IO</h3>
-                            </div>
-                            <div class="specs-grid">
-                                <div class="spec-row"><span>Push Button (8-bit):</span> <strong
-                                        id="ctrl-pushButton">--</strong></div>
-                                <div class="spec-row"><span>Analog Pot 0 (10-bit):</span> <strong
-                                        id="ctrl-analogPot0">--</strong></div>
-                                <div class="spec-row"><span>Analog Pot 1 (10-bit):</span> <strong
-                                        id="ctrl-analogPot1">--</strong></div>
-                                <div class="spec-row"><span>Static Var:</span> <strong id="ctrl-statVar"
-                                        class="font-mono">--</strong></div>
-                                <div class="spec-row">
-                                    <span>LCD Display:</span>
-                                    <input type="text" id="ctrl-lcdDisplay" class="lcd-input" maxlength="15"
-                                        value="Hello World">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
-        </main>
+
+    </div>
+    </main>
     </div>
 
     <!-- Connection Error Modal -->
