@@ -150,6 +150,85 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('sum-offline').textContent = offlineCount;
         }
 
+        // --- Power Utilization Bar Chart Logic ---
+        let totalPwrMppt = 0;
+        let totalPwrGrid = 0;
+        let totalPwrPoe = 0;
+        let totalPwrBatt = 0;
+
+        devices.forEach(dev => {
+            if (dev.status === "offline") return; // Skip offline towers for live power aggregation
+
+            const busV = parseFloat(dev.totalVoltageBms || "0") / 100;
+
+            // MPPT Power
+            if (dev.mpptLive) {
+                totalPwrMppt += parseFloat(dev.outputPowerMppt || "0");
+            }
+
+            // Grid Power
+            if (dev.rectifierLive) {
+                totalPwrGrid += parseFloat(dev.outputPowerRect || "0");
+            }
+
+            // PoE Power (roughly 3A * Bus Voltage)
+            if (dev.poeLive) {
+                totalPwrPoe += (3.0 * busV);
+            }
+
+            // Battery Power
+            const rawDischarge = parseInt(dev.dischargingCurrent || "0", 10);
+            let signed = rawDischarge > 32767 ? rawDischarge - 65536 : rawDischarge;
+            let dischargeA = 0;
+            if (signed < 0) {
+                dischargeA = (0.0115 * signed) + 23.25;
+            } else if (rawDischarge > 0) {
+                dischargeA = rawDischarge / 100;
+            }
+
+            const isCharging = parseInt(dev.chargingCurrent || "0", 10) > 0;
+            if (!isCharging && dischargeA > 0) {
+                totalPwrBatt += (dischargeA * busV);
+            }
+        });
+
+        // Find max
+        const maxAggPwr = Math.max(100, totalPwrMppt, totalPwrGrid, totalPwrPoe, totalPwrBatt);
+
+        const setText = (id, txt) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = txt;
+        };
+
+        const setHeight = (id, pct) => {
+            const el = document.getElementById(id);
+            if (el) el.style.height = `${Math.min(100, Math.max(0, pct))}%`;
+        };
+
+        // Format to kW if large, otherwise W
+        const formatPower = (w) => {
+            if (w >= 1000) return (w / 1000).toFixed(1) + ' kW';
+            return Math.round(w) + ' W';
+        };
+
+        // Update Text
+        setText('agg-bar-val-mppt', formatPower(totalPwrMppt));
+        setText('agg-bar-val-grid', formatPower(totalPwrGrid));
+        setText('agg-bar-val-poe', formatPower(totalPwrPoe));
+        setText('agg-bar-val-batt', formatPower(totalPwrBatt));
+
+        // Update Heights
+        setHeight('agg-bar-mppt', (totalPwrMppt / maxAggPwr) * 100);
+        setHeight('agg-bar-grid', (totalPwrGrid / maxAggPwr) * 100);
+        setHeight('agg-bar-poe', (totalPwrPoe / maxAggPwr) * 100);
+        setHeight('agg-bar-batt', (totalPwrBatt / maxAggPwr) * 100);
+
+        // Update Labels
+        setText('agg-y-axis-100', formatPower(maxAggPwr));
+        setText('agg-y-axis-75', formatPower(maxAggPwr * 0.75));
+        setText('agg-y-axis-50', formatPower(maxAggPwr * 0.50));
+        setText('agg-y-axis-25', formatPower(maxAggPwr * 0.25));
+
         // Auto-zoom to fit all markers
         if (map && markers.length > 0) {
             const group = new L.featureGroup(markers);

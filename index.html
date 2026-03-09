@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telco Power Control</title>
+    <title>Delta Power Control</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
         rel="stylesheet">
@@ -247,43 +247,47 @@
 
                     <!-- Chart Card -->
                     <div class="chart-card">
-                        <h3>SYSTEM HEALTH BY REGION</h3>
-                        <div class="bar-chart" style="padding-left: 2rem;">
-                            <div class="y-axis">
-                                <span>100</span>
-                                <span>75</span>
-                                <span>50</span>
-                                <span>25</span>
-                                <span>0</span>
+                        <h3>POWER UTILIZATION BY SOURCE</h3>
+                        <div class="bar-chart-container" style="height: 200px; padding: 10px 0 0 0; margin-top: 10px;">
+                            <!-- Y-Axis Labels -->
+                            <div class="bar-chart-y-axis" id="agg-y-axis-labels">
+                                <span id="agg-y-axis-100">100%</span>
+                                <span id="agg-y-axis-75">75%</span>
+                                <span id="agg-y-axis-50">50%</span>
+                                <span id="agg-y-axis-25">25%</span>
+                                <span id="agg-y-axis-0">0</span>
                             </div>
 
-                            <div class="bar-group">
-                                <div class="bar" style="height: 75%;"></div>
-                                <span class="x-label">Cal</span>
-                            </div>
-                            <div class="bar-group">
-                                <div class="bar" style="height: 40%;"></div>
-                                <span class="x-label">Sal</span>
-                            </div>
-                            <div class="bar-group">
-                                <div class="bar" style="height: 40%;"></div>
-                                <span class="x-label">Cal</span>
-                            </div>
-                            <div class="bar-group">
-                                <div class="bar" style="height: 60%;"></div>
-                                <span class="x-label">Cal</span>
-                            </div>
-                            <div class="bar-group">
-                                <div class="bar" style="height: 85%;"></div>
-                                <span class="x-label">NLL</span>
-                            </div>
-                            <div class="bar-group">
-                                <div class="bar" style="height: 65%;"></div>
-                                <span class="x-label">ludp</span>
-                            </div>
-                            <div class="bar-group">
-                                <div class="bar gray" style="height: 28%;"></div>
-                                <span class="x-label">Nfk</span>
+                            <!-- Bars -->
+                            <div class="bar-chart-bars">
+                                <div class="bar-col">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" id="agg-bar-mppt" style="height: 0%"></div>
+                                    </div>
+                                    <div class="bar-label">MPPT</div>
+                                    <div class="bar-val font-mono" id="agg-bar-val-mppt">0 MW</div>
+                                </div>
+                                <div class="bar-col">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" id="agg-bar-grid" style="height: 0%"></div>
+                                    </div>
+                                    <div class="bar-label">Grid</div>
+                                    <div class="bar-val font-mono" id="agg-bar-val-grid">0 MW</div>
+                                </div>
+                                <div class="bar-col">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" id="agg-bar-poe" style="height: 0%"></div>
+                                    </div>
+                                    <div class="bar-label">PoE</div>
+                                    <div class="bar-val font-mono" id="agg-bar-val-poe">0 MW</div>
+                                </div>
+                                <div class="bar-col">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" id="agg-bar-batt" style="height: 0%"></div>
+                                    </div>
+                                    <div class="bar-label">Battery</div>
+                                    <div class="bar-val font-mono" id="agg-bar-val-batt">0 MW</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -418,12 +422,12 @@
     <div class="modal-overlay hidden" id="project-details-modal">
         <div class="modal-content" style="max-width: 600px;">
             <div class="modal-header">
-                <h3>Project Details: Telco Power Control</h3>
+                <h3>Project Details: Telecom Power Control</h3>
                 <button class="modal-close" id="close-details-modal"><ion-icon name="close-outline"></ion-icon></button>
             </div>
             <div class="modal-body" style="line-height: 1.6; color: var(--text-primary);">
-                <p><strong>System Name:</strong> Telco Power Control Dashboard v2.1</p>
-                <p><strong>Description:</strong> A real-time SNMP monitoring bridge for remote Telco towers. It tracks
+                <p><strong>System Name:</strong> Telecom Power Control Dashboard v2.1</p>
+                <p><strong>Description:</strong> A real-time SNMP monitoring bridge for remote Telecom towers. It tracks
                     Rectifier, BMS, and MPPT status via OID polling.</p>
                 <p style="margin-top: 1rem;"><strong>Core Features:</strong></p>
                 <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
