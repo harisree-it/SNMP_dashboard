@@ -243,18 +243,6 @@ class DashboardApp {
         }
 
 
-        // --- DASHBOARD OVERVIEW ---
-        // Total Output Power = Rectifier Power + MPPT Power
-        const totalPwr = this.state.outputPowerRect + this.state.outputPowerMppt;
-        this.setText('dash-power', totalPwr);
-        this.setText('dash-bus-voltage', (this.state.totalVoltageBms / 100).toFixed(2));
-        this.setText('dash-ambient-temp', this.state.ambientTempRect);
-
-        // SOC Formatter
-        const currentSoc = this.state.remainingSoc.toFixed(1);
-        this.setText('dash-soc', currentSoc);
-        document.getElementById('dash-soc-bar').style.width = `${currentSoc}%`;
-
         // Topology Badges & Animations
         const mpptCur = (this.state.mpptLive ? (this.state.dcOpCurMppt / 100) : 0).toFixed(1);
         const rectCur = (this.state.rectifierLive ? (this.state.dcOpCurRect / 100) : 0).toFixed(1);
@@ -359,6 +347,19 @@ class DashboardApp {
 
         // Control Load Animation
         togglePath('flow-load', loadCurNum > 0.0);
+
+        // --- DASHBOARD OVERVIEW ---
+        const busVoltage = (this.state.totalVoltageBms / 100).toFixed(2);
+        const totalPwr = (busVoltage * loadCur).toFixed(0);
+        this.setText('dash-power', totalPwr);
+        this.setText('dash-bus-voltage', busVoltage);
+        this.setText('dash-ambient-temp', this.state.ambientTempRect);
+
+        // SOC Formatter
+        const currentSoc = this.state.remainingSoc.toFixed(1);
+        this.setText('dash-soc', currentSoc);
+        document.getElementById('dash-soc-bar').style.width = `${currentSoc}%`;
+
 
         // --- BMS TAB ---
         this.setText('bms-totalCapacity', (this.state.totalCapacity / 100).toFixed(2) + ' Ah');
