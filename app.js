@@ -153,10 +153,18 @@ class DashboardApp {
     }
 
     startSimulation() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const deviceId = urlParams.get('id');
+
+        if (!deviceId) {
+            window.location.href = 'index.html';
+            return; // Stop execution
+        }
+
         // Fetch Live SNMP Data from the Backend every 2 seconds
         this.mockDataInterval = setInterval(async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/data');
+                const response = await fetch(`http://localhost:3000/api/data/${deviceId}`);
                 if (response.ok) {
                     const data = await response.json();
 

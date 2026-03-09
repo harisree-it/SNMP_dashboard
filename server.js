@@ -11,12 +11,18 @@ app.use(cors());
 app.use(express.static(path.join(__dirname)));
 app.use(express.json());
 
-// SNMP Configuration
-const SNMP_AGENT_IP = '192.168.100.11';
-const SNMP_COMMUNITY = 'read'; //  community string
-const SNMP_WRITE_COMMUNITY = 'write'; //  write community
+// SNMP Configuration (Multiple Devices)
+const DEVICES = [
+    { id: 'site_alpha', name: 'Site Alpha', ip: '192.168.100.12', lat: 12.8237366, lng: 77.6826408 },
+    { id: 'site_beta', name: 'Site Beta', ip: '192.168.100.11', lat: 19.0760, lng: 72.8777 },
+    // Add additional devices here, e.g.,
+    // { id: 'site_beta', name: 'Site Beta', ip: '192.168.100.12' }
+];
 
-// MIB OID Mappings
+const SNMP_COMMUNITY = 'read'; // community string
+const SNMP_WRITE_COMMUNITY = 'write'; // write community
+
+// MIB OID Mappings (Same for all devices)
 const OIDS = {
     // Basic System Info
     sysDescr: '1.3.6.1.4.1.2254.2.51.1.1.1.1.0',
@@ -55,7 +61,7 @@ const OIDS = {
     llcTemp: '1.3.6.1.4.1.2254.2.51.1.1.8.8.0',
     pfcTemp: '1.3.6.1.4.1.2254.2.51.1.1.8.9.0',
     rectifierOnStatus: '1.3.6.1.4.1.2254.2.51.1.1.8.10.0',
-    
+
 
     // MPPT
     dcOpVoltageMppt: '1.3.6.1.4.1.2254.2.51.1.1.9.1.0',
@@ -84,31 +90,40 @@ for (let i = 1; i <= 5; i++) {
     OIDS[`temperatureValueNtc${i}`] = `1.3.6.1.4.1.2254.2.51.1.1.7.${28 + i}.0`;
 }
 
-// Global state cache mapping to frontend view
-let stateCache = {
-    name: "Delta Rectifier Pro",
-    version: "v2.1.0",
-    date: "2025-08-27",
-    bmsLive: 0, rectifierLive: 0, mpptLive: 0, poeLive: 0,
-    totalVoltageBms: 0, chargingCurrent: 0, dischargingCurrent: 0,
-    remainingCapacity: 0, totalCapacity: 0, dischargeCycle: 0,
-    remainingSoc: 0, protectionStatus: 0, mosfetControlStatus: 0,
-    cellVoltages: new Array(15).fill(0),
-    cellBalances: new Array(15).fill(0),
-    ntcTemps: new Array(5).fill(0),
-    dcOpVoltageRect: 0, dcOpCurRect: 0, acIpVoltageRect: 0, busVoltage: 0, outputPowerRect: 0,
-    ambientTempRect: 0, srTemp: 0, llcTemp: 0, pfcTemp: 0, rectifierOnStatus: 0, alarmStatus: 0,
-    dcOpVoltageMppt: 0, dcOpCurMppt: 0, acIpVoltageMppt: 0, acIpCurMppt: 0, outputPowerMppt: 0,
-    ambientTempMppt: 0, srTempMppt: 0, llcTempMppt: 0, pfcTempMppt: 0, mpptOnStatus: 0,
-    ledD5: 0, ledD6: 0, ledD7: 0, pushButton: 0, analogPot0: 0, analogPot1: 0, statVar: "", lcdDisplay: "",
-    lastUpdate: null,
-    backendStatus: "polling"
-};
+// Global state caches mapped by Device ID
+let deviceStates = {};
 
-let isPolling = false;
+// Initialize state cache for each configured device
+function initDefaultState(device) {
+    return {
+        id: device.id,
+        name: device.name,
+        ip: device.ip,
+        version: "v2.1.0",
+        date: "2025-08-27",
+        bmsLive: 0, rectifierLive: 0, mpptLive: 0, poeLive: 0,
+        totalVoltageBms: 0, chargingCurrent: 0, dischargingCurrent: 0,
+        remainingCapacity: 0, totalCapacity: 0, dischargeCycle: 0,
+        remainingSoc: 0, protectionStatus: 0, mosfetControlStatus: 0,
+        cellVoltages: new Array(15).fill(0),
+        cellBalances: new Array(15).fill(0),
+        ntcTemps: new Array(5).fill(0),
+        dcOpVoltageRect: 0, dcOpCurRect: 0, acIpVoltageRect: 0, busVoltage: 0, outputPowerRect: 0,
+        ambientTempRect: 0, srTemp: 0, llcTemp: 0, pfcTemp: 0, rectifierOnStatus: 0, alarmStatus: 0,
+        dcOpVoltageMppt: 0, dcOpCurMppt: 0, acIpVoltageMppt: 0, acIpCurMppt: 0, outputPowerMppt: 0,
+        ambientTempMppt: 0, srTempMppt: 0, llcTempMppt: 0, pfcTempMppt: 0, mpptOnStatus: 0,
+        ledD5: 0, ledD6: 0, ledD7: 0, pushButton: 0, analogPot0: 0, analogPot1: 0, statVar: "", lcdDisplay: "",
+        lastUpdate: null,
+        status: "offline" // online, offline, polling
+    };
+}
 
-function createSession() {
-    return snmp.createSession(SNMP_AGENT_IP, SNMP_COMMUNITY, {
+DEVICES.forEach(dev => {
+    deviceStates[dev.id] = initDefaultState(dev);
+});
+
+function createSession(ip) {
+    return snmp.createSession(ip, SNMP_COMMUNITY, {
         port: 161,
         retries: 0, // No retries to speed up the loop when skipping invalid OIDs
         timeout: 1000,
@@ -116,21 +131,57 @@ function createSession() {
     });
 }
 
-function pollSnmpData() {
+let isPolling = false;
+
+function pollAllDevices() {
     if (isPolling) return;
     isPolling = true;
 
-    const session = createSession();
+    // We process devices concurrently, but OIDs sequentially per device
+    let pendingDevices = DEVICES.length;
+
+    if (pendingDevices === 0) {
+        isPolling = false;
+        return;
+    }
+
+    DEVICES.forEach(device => {
+        let state = deviceStates[device.id];
+        state.status = "polling";
+        pollSingleDevice(device, state, () => {
+            pendingDevices--;
+            if (pendingDevices === 0) {
+                isPolling = false;
+            }
+        });
+    });
+}
+
+function pollSingleDevice(device, stateCache, onComplete) {
+    const session = createSession(device.ip);
     const keys = Object.keys(OIDS);
     let currentIndex = 0;
     let successCount = 0;
+    let consecutiveFailures = 0;
+    const MAX_CONSECUTIVE_FAILURES = 3; // Stop polling early if we get this many timeouts in a row
+
+    // Track original polling start time to determine if it timed out totally
+    let hasAnySuccess = false;
 
     function fetchNextSingleOid() {
-        if (currentIndex >= keys.length) {
+        if (currentIndex >= keys.length || consecutiveFailures >= MAX_CONSECUTIVE_FAILURES) {
             stateCache.lastUpdate = new Date().toISOString();
-            console.log(`[Poll Cycle Complete] Found ${successCount}/${keys.length} valid variables.`);
+
+            if (hasAnySuccess) {
+                stateCache.status = "online";
+                console.log(`[${device.id}] Cycle Complete: Found ${successCount}/${keys.length} valid variables.`);
+            } else {
+                stateCache.status = "offline";
+                console.log(`[${device.id}] Cycle Complete: Offline (No variables responding).`);
+            }
+
             session.close();
-            isPolling = false;
+            onComplete();
             return;
         }
 
@@ -141,6 +192,8 @@ function pollSnmpData() {
         session.get([oid], (error, varbinds) => {
             if (!error && varbinds.length > 0 && !snmp.isVarbindError(varbinds[0])) {
                 successCount++;
+                consecutiveFailures = 0; // Reset failures on success
+                hasAnySuccess = true;
                 let val = varbinds[0].value;
                 if (Buffer.isBuffer(val)) {
                     val = val.toString('utf8');
@@ -159,6 +212,9 @@ function pollSnmpData() {
                     stateCache[key] = val;
                 }
             } else {
+                if (error && error.message === 'Request timed out') {
+                    consecutiveFailures++;
+                }
                 if (key === 'sysDescr') {
                     stateCache[key] = null;
                 }
@@ -171,16 +227,75 @@ function pollSnmpData() {
     fetchNextSingleOid();
 }
 
-// Start Background Polling every 5 seconds (to allow the loop to finish)
-setInterval(pollSnmpData, 2000);
-pollSnmpData();
+// Start Background Polling every 5 seconds (to allow the loops to finish)
+setInterval(pollAllDevices, 2000);
+pollAllDevices();
 
 // --- API Endpoints ---
-app.get('/api/data', (req, res) => {
-    res.json(stateCache);
+
+// Get Overview (List of devices + status)
+app.get('/api/devices', (req, res) => {
+    const summary = DEVICES.map(dev => {
+        const state = deviceStates[dev.id];
+        return {
+            id: dev.id,
+            name: dev.name,
+            ip: dev.ip,
+            lat: dev.lat,
+            lng: dev.lng,
+            status: state.status,
+            lastUpdate: state.lastUpdate,
+            sysDescr: state.sysDescr,
+            sysUpTime: state.sysUpTime
+        };
+    });
+    res.json(summary);
 });
 
-app.post('/api/set', (req, res) => {
+// Add a new device
+app.post('/api/devices', (req, res) => {
+    const { name, ip, lat, lng } = req.body;
+
+    if (!name || !ip) {
+        return res.status(400).json({ error: "Name and IP are required" });
+    }
+
+    // Simple ID generator based on name
+    const id = name.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Math.floor(Math.random() * 1000);
+
+    const newDevice = {
+        id,
+        name,
+        ip,
+        lat: parseFloat(lat) || null,
+        lng: parseFloat(lng) || null
+    };
+
+    // Initialize state FULLY before adding to DEVICES to prevent race condition crashes
+    deviceStates[id] = initDefaultState(newDevice);
+
+    DEVICES.push(newDevice);
+
+    res.json({ success: true, device: newDevice });
+});
+
+// Get detailed data for a specific device
+app.get('/api/data/:id', (req, res) => {
+    const deviceId = req.params.id;
+    if (deviceStates[deviceId]) {
+        res.json(deviceStates[deviceId]);
+    } else {
+        res.status(404).json({ error: "Device not found" });
+    }
+});
+
+// Write to a specific device
+app.post('/api/set/:id', (req, res) => {
+    const deviceId = req.params.id;
+    const deviceConfig = DEVICES.find(d => d.id === deviceId);
+
+    if (!deviceConfig) return res.status(404).json({ error: "Device not found" });
+
     const { key, value, type } = req.body;
     const oid = OIDS[key];
     if (!oid) return res.status(400).json({ error: "Unknown key" });
@@ -196,12 +311,12 @@ app.post('/api/set', (req, res) => {
         }
     ];
 
-    const writeSession = snmp.createSession(SNMP_AGENT_IP, SNMP_WRITE_COMMUNITY, { port: 161, version: snmp.Version2c });
+    const writeSession = snmp.createSession(deviceConfig.ip, SNMP_WRITE_COMMUNITY, { port: 161, version: snmp.Version2c });
 
     writeSession.set(varbinds, (error, varbindsOut) => {
         writeSession.close();
         if (error) {
-            console.error(`Set error for ${key}:`, error.message);
+            console.error(`Set error for ${key} on ${deviceConfig.id}:`, error.message);
             return res.status(500).json({ success: false, error: error.message });
         }
         res.json({ success: true });
@@ -210,5 +325,5 @@ app.post('/api/set', (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`SNMP Bridge Backend running on http://localhost:${PORT}`);
-    console.log(`Polling target: ${SNMP_AGENT_IP}:161 sequentially (ignoring absent OIDs)`);
+    console.log(`Configured Devices: ${DEVICES.map(d => `${d.name} (${d.ip})`).join(', ')}`);
 });

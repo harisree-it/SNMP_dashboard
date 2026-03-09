@@ -31,6 +31,12 @@ A real-time, responsive web dashboard built in Node.js, Express, and Vanilla JS 
 
 ## Version History
 
+- **v1.1.0** (Current Release)
+  - Implemented multi-device support, polling configuration allowing multiple SNMP target systems (e.g. Site Alpha, Site Beta).
+  - Introduced fail-fast consecutive timeout tracking in SNMP polling to quickly offline unresponsive targets without waiting for the full OID queue to timeout.
+  - Resolved `ReferenceError` preventing the interactive UI from rendering fully operational datasets natively fetched from backend `/api/data/:id`.
+  - Added new test scripts for connection verification (`test_connection.js`, `test_minimal.js`, `test_seq.js`).
+
 - **v1.0.0** (Initial Release)
   - SNMP architecture mapped and modeled using `net-snmp` wrapper to communicate with `192.168.100.11` via `community: read` configuration.
   - Implementation of sequential SNMP Polling cycles to avoid network timeouts globally fetching over 70+ custom `.1.3.6.1.4.1.2254` Delta OID nodes.

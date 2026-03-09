@@ -4,517 +4,486 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delta Rectifier Dashboard</title>
+    <title>Telco Power Control</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=4">
-    <!-- Ionicons for Icons -->
+    <link rel="stylesheet" href="styles.css?v=8">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
 
 <body>
-    <div class="background-orbs">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-    </div>
+    <div class="app-container">
+        <!-- Sidebar Icons -->
+        <div class="sidebar-icons">
+            <ion-icon name="menu-outline" class="brand-icon" id="toggle-chat-btn" style="cursor: pointer;"></ion-icon>
 
-    <div class="dashboard-layout">
-        <!-- Sidebar Navigation -->
-        <aside class="glass-sidebar">
-            <div class="logo">
-                <ion-icon name="flash-outline"></ion-icon>
-                <h2>Delta Power</h2>
+            <div class="nav-icons">
+                <div class="nav-icon" id="nav-systems"><ion-icon name="grid-outline"></ion-icon></div>
+                <div class="nav-icon active" id="nav-chat"><ion-icon name="people-outline"></ion-icon></div>
+                <div class="nav-icon" id="nav-details"><ion-icon name="clipboard-outline"></ion-icon></div>
+                <div class="nav-icon" id="nav-warnings"><ion-icon name="notifications-outline"></ion-icon></div>
             </div>
 
-            <nav class="side-nav">
-                <button class="nav-item active" data-tab="dashboard">
-                    <ion-icon name="grid-outline"></ion-icon>
-                    Dashboard
-                </button>
-                <button class="nav-item" data-tab="bms">
-                    <ion-icon name="battery-charging-outline"></ion-icon>
-                    BMS Details
-                </button>
-                <button class="nav-item" data-tab="rectifier">
-                    <ion-icon name="power-outline"></ion-icon>
-                    Rectifier
-                </button>
-                <button class="nav-item" data-tab="mppt">
-                    <ion-icon name="sunny-outline"></ion-icon>
-                    MPPT
-                </button>
-                <button class="nav-item" data-tab="control">
-                    <ion-icon name="options-outline"></ion-icon>
-                    Control & IO
-                </button>
-            </nav>
+            <div class="nav-icon nav-icon-bottom"><ion-icon name="log-out-outline"></ion-icon></div>
+        </div>
 
-            <div class="system-status">
-                <div class="connection-status-box mb-2">
-                    <h3 style="margin-top:0">Connection</h3>
-                    <div id="status-sysDescr" class="status-badge error"
-                        style="display:inline-block; margin-top:5px; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;">
-                        Not Connected</div>
+        <!-- Sidebar Chat -->
+        <div class="sidebar-chat">
+            <div class="chat-header">
+                <h2>SERVICE ENGINEERS CHAT</h2>
+                <ion-icon name="log-in-outline" class="header-icon"></ion-icon>
+            </div>
+
+            <div class="chat-list">
+                <!-- Chat Item 1 -->
+                <div class="chat-item">
+                    <img src="https://i.pravatar.cc/150?img=5" alt="S. Tapaswi" class="avatar">
+                    <div class="chat-info">
+                        <div class="chat-name-time">
+                            <span class="chat-name">S. Tapaswi <span class="status-dot offline"></span></span>
+                            <span class="chat-time">2:38 PM</span>
+                        </div>
+                        <div class="chat-msg">Hi, hanst four tower maintenance.</div>
+                    </div>
                 </div>
 
-                <h3>Live Status</h3>
-                <div class="status-item">
-                    <span class="status-indicator" id="status-bmsLive"></span>
-                    <span>BMS</span>
+                <!-- Chat Item 2 -->
+                <div class="chat-item">
+                    <img src="https://i.pravatar.cc/150?img=11" alt="Anand Mohan" class="avatar">
+                    <div class="chat-info">
+                        <div class="chat-name-time">
+                            <span class="chat-name">Anand Mohan <span class="status-dot online"></span></span>
+                            <span class="chat-time">3:39 AM</span>
+                        </div>
+                        <div class="chat-msg">Updated System IP conf...</div>
+                    </div>
                 </div>
-                <div class="status-item">
-                    <span class="status-indicator" id="status-rectifierLive"></span>
-                    <span>Rectifier</span>
+
+                <!-- Chat Item 3 -->
+                <div class="chat-item">
+                    <img src="https://i.pravatar.cc/150?img=12" alt="Vishnu C V" class="avatar">
+                    <div class="chat-info">
+                        <div class="chat-name-time">
+                            <span class="chat-name">Vishnu C V <span class="status-dot away"></span></span>
+                            <span class="chat-time">3:32 PM</span>
+                        </div>
+                        <div class="chat-msg">Priority algorithm order ch....</div>
+                    </div>
                 </div>
-                <div class="status-item">
-                    <span class="status-indicator" id="status-mpptLive"></span>
-                    <span>MPPT</span>
+
+                <!-- Chat Item 4 -->
+                <div class="chat-item">
+                    <img src="https://i.pravatar.cc/150?img=13" alt="Shaik Imam H" class="avatar">
+                    <div class="chat-info">
+                        <div class="chat-name-time">
+                            <span class="chat-name">Shaik Imam H <span class="status-dot online"></span></span>
+                            <span class="chat-time">2:38 PM</span>
+                        </div>
+                        <div class="chat-msg">Rectifier fault suspected.</div>
+                    </div>
                 </div>
-                <div class="status-item">
-                    <span class="status-indicator" id="status-poeLive"></span>
-                    <span>PoE</span>
+
+                <!-- Chat Item 5 (Active with replies) -->
+                <div class="chat-item active"
+                    style="flex-direction: column; gap: 0.5rem; background-color: rgba(255,255,255,0.03);">
+                    <div style="display: flex; gap: 1rem;">
+                        <img src="https://i.pravatar.cc/150?img=5" alt="S. Tapaswi" class="avatar">
+                        <div class="chat-info">
+                            <div class="chat-name-time">
+                                <span class="chat-name">S. Tapaswi <span class="status-dot online"></span></span>
+                                <span class="chat-time">1:39 AM</span>
+                            </div>
+                            <div class="chat-msg">Tower maintenance.</div>
+                        </div>
+                    </div>
+
+                    <div
+                        style="display: flex; justify-content: flex-end; gap: 0.5rem; align-items: flex-end; margin-left: 1rem;">
+                        <div class="chat-bubble mine">
+                            <strong>Re: Alert at Site 401...</strong><br>
+                            Rectifier fault suspected.
+                        </div>
+                        <img src="https://i.pravatar.cc/150?img=8" alt="Me" class="avatar"
+                            style="width: 24px; height: 24px; margin-bottom: 0.5rem;">
+                    </div>
+
+                    <div
+                        style="display: flex; gap: 0.5rem; align-items: flex-start; margin-left: 2rem; margin-top: 0.5rem;">
+                        <img src="https://i.pravatar.cc/150?img=5" alt="S. Tapaswi" class="avatar"
+                            style="width: 24px; height: 24px; margin-top: 0.75rem;">
+                        <div class="chat-bubble">
+                            <strong>Re: Alert at Site 401...</strong><br>
+                            Rectifier fault suspected.
+                        </div>
+                        <span class="chat-time" style="align-self: flex-end; margin-left: auto;">12:37 AM</span>
+                    </div>
                 </div>
             </div>
-        </aside>
 
-        <!-- Main Content Area -->
-        <main class="main-content">
-            <header class="glass-header">
-                <div>
-                    <h1 id="page-title">System Overview</h1>
-                    <p class="subtitle" id="product-name">product.name</p>
+            <div class="chat-input-area">
+                <div class="chat-input-wrapper">
+                    <input type="text" placeholder="Type a your message...">
+                    <button class="chat-icon-btn" id="chat-attach-btn"><ion-icon
+                            name="attach-outline"></ion-icon></button>
+                    <button class="chat-icon-btn" id="chat-camera-btn"><ion-icon
+                            name="camera-outline"></ion-icon></button>
+                    <button class="chat-icon-btn" id="chat-location-btn"><ion-icon
+                            name="location-outline"></ion-icon></button>
+                    <button class="chat-send-btn" id="chat-send-btn"><ion-icon
+                            name="arrow-up-outline"></ion-icon></button>
                 </div>
-                <div class="header-info">
-                    <div class="info-badge">
-                        <ion-icon name="code-working-outline"></ion-icon>
-                        <span id="product-version">v--</span>
-                    </div>
-                    <div class="info-badge">
-                        <ion-icon name="calendar-outline"></ion-icon>
-                        <span id="product-date">--</span>
-                    </div>
-                </div>
-            </header>
-
-            <div class="tab-container">
-                <!-- DASHBOARD TAB -->
-                <div class="tab-pane active" id="tab-dashboard">
-                    <div class="dashboard-main-grid">
-                        <div class="glass-widget large-widget">
-                            <div class="widget-header">
-                                <h3>System Power Flow</h3>
-                            </div>
-                            <div class="topology-container"
-                                style="position: relative; width: 100%; max-width: 800px; aspect-ratio: 2 / 1; margin: 0 auto;">
-                                <!-- SVG viewport mapped 1:1 with container percentages -->
-                                <svg class="topology-lines" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet"
-                                    style="position: absolute; top:0; left:0; width:100%; height:100%;">
-                                    <defs>
-                                        <linearGradient id="flow-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                            <stop offset="0%" stop-color="rgba(88, 166, 255, 0.1)" />
-                                            <stop offset="50%" stop-color="rgba(88, 166, 255, 0.8)" />
-                                            <stop offset="100%" stop-color="rgba(88, 166, 255, 0.1)" />
-                                        </linearGradient>
-                                        <filter id="glow" filterUnits="userSpaceOnUse" x="-20%" y="-20%" width="140%"
-                                            height="140%">
-                                            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-                                            <feMerge>
-                                                <feMergeNode in="coloredBlur" />
-                                                <feMergeNode in="SourceGraphic" />
-                                            </feMerge>
-                                        </filter>
-                                    </defs>
-                                    <!-- Static Background Tracks -->
-                                    <path class="flow-line-outer" d="M 160 85 C 250 85, 250 200, 370 200" />
-                                    <path class="flow-line-outer" d="M 160 205 L 370 205.01" />
-                                    <path class="flow-line-outer" d="M 160 325 C 250 325, 250 210, 370 210" />
-                                    <path class="flow-line-outer" d="M 430 205 L 610 205.01" />
-                                    <path class="flow-line-outer" d="M 400 230 L 400.01 290" /> <!-- Battery track -->
-
-                                    <!-- MPPT to Center -->
-                                    <g id="flow-mppt" style="display:none;">
-                                        <path class="flow-line-inner" d="M 160 85 C 250 85, 250 200, 370 200" />
-                                        <path class="flow-particles p1" d="M 160 85 C 250 85, 250 200, 370 200" />
-                                    </g>
-
-                                    <!-- Rectifier to Center -->
-                                    <g id="flow-rect" style="display:none;">
-                                        <path class="flow-line-inner" d="M 160 205 L 370 205.01" />
-                                        <path class="flow-particles p2" d="M 160 205 L 370 205.01" />
-                                    </g>
-
-                                    <!-- PoE to Center -->
-                                    <g id="flow-poe" style="display:none;">
-                                        <path class="flow-line-inner" d="M 160 325 C 250 325, 250 210, 370 210" />
-                                        <path class="flow-particles p3" d="M 160 325 C 250 325, 250 210, 370 210" />
-                                    </g>
-
-                                    <!-- Center to Load -->
-                                    <g id="flow-load" style="display:none;">
-                                        <path class="flow-line-inner" d="M 430 205 L 610 205.01" />
-                                        <path class="flow-particles p4" d="M 430 205 L 610 205.01" />
-                                    </g>
-
-                                    <!-- Center to Battery (Charging mode) -->
-                                    <g id="flow-batt-chg" style="display:none;">
-                                        <path class="flow-line-inner" d="M 400 230 L 400.01 290" />
-                                        <path class="flow-particles p5" d="M 400 230 L 400.01 290" />
-                                    </g>
-
-                                    <!-- Battery to Center (Discharging mode) -->
-                                    <g id="flow-batt-dischg" style="display:none;">
-                                        <path class="flow-line-inner" d="M 400 290 L 400.01 230" />
-                                        <path class="flow-particles p5" d="M 400 290 L 400.01 230" />
-                                    </g>
-                                </svg>
-
-                                <!-- Nodes with dynamic percentage scales based on original 800x400 px offsets -->
-                                <div class="topo-node topo-source" style="top: 11.25%; left: 2.5%;">
-                                    <div class="node-header">
-                                        <span class="node-icon"><ion-icon name="sunny-outline"></ion-icon></span>
-                                        <div class="node-status">
-                                            <ion-icon name="speedometer-outline"></ion-icon>
-                                            <ion-icon id="mppt-signal-icon" name="cellular-outline"
-                                                class="signal-err"></ion-icon>
-                                        </div>
-                                    </div>
-                                    <div class="node-title">MPPT<br>Converter</div>
-                                </div>
-
-                                <div class="topo-node topo-source" style="top: 40%; left: 2.5%;">
-                                    <div class="node-header">
-                                        <span class="node-icon"><ion-icon name="flash-outline"></ion-icon></span>
-                                        <div class="node-status">
-                                            <ion-icon name="speedometer-outline"></ion-icon>
-                                            <ion-icon id="rect-signal-icon" name="cellular-outline"
-                                                class="signal-err"></ion-icon>
-                                        </div>
-                                    </div>
-                                    <div class="node-title">Rectifier<br>Converter</div>
-                                </div>
-
-                                <div class="topo-node topo-source" style="top: 68.75%; left: 2.5%;">
-                                    <div class="node-header">
-                                        <span class="node-icon"><ion-icon name="wifi-outline"></ion-icon></span>
-                                        <div class="node-status">
-                                            <ion-icon name="speedometer-outline"></ion-icon>
-                                            <ion-icon id="poe-signal-icon" name="cellular-outline"
-                                                class="signal-err"></ion-icon>
-                                        </div>
-                                    </div>
-                                    <div class="node-title">PoE<br>Converter</div>
-                                </div>
-
-                                <div class="topo-node topo-center" style="top: 42.5%; left: 46.25%;">
-                                    <div class="center-pulse"></div>
-                                </div>
-
-                                <div class="topo-node topo-load"
-                                    style="top: 41.25%; left: 76.25%; width: 17.5%; height: 17.5%; display: flex; align-items: center; justify-content: center;">
-                                    <div class="node-title" style="font-size: 1.1rem;">Load</div>
-                                </div>
-
-                                <div class="topo-node topo-battery" style="top: 72.5%; left: 41.25%; width: 17.5%;">
-                                    <div class="node-header" style="justify-content: flex-end;">
-                                        <ion-icon id="batt-status-icon" name="battery-dead-outline" class="signal-err"
-                                            style="font-size: 1.2rem;"></ion-icon>
-                                    </div>
-                                    <div class="node-title" style="margin-top: 15px; font-size: 1.1rem;">Battery</div>
-                                </div>
-
-                                <!-- Badges (Positions relative to 800x400) -->
-                                <div class="topo-badge" style="top: 25%; left: 27.5%;" id="topo-mppt-cur">0.0 A</div>
-                                <div class="topo-badge" style="top: 46.25%; left: 27.5%;" id="topo-rect-cur">0.0 A</div>
-                                <div class="topo-badge" style="top: 68.75%; left: 27.5%;" id="topo-poe-cur">0.0 A</div>
-                                <div class="topo-badge" style="top: 46.25%; left: 63.75%;" id="topo-load-cur">0.0 A
-                                </div>
-                                <div class="topo-badge" style="top: 62.5%; left: 52.5%; text-align: left;">
-                                    <span id="topo-batt-cur">0.0 A</span><br>
-                                    <span style="font-size: 0.65rem; color: var(--text-secondary);">charging</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="widget-stack">
-                            <div class="glass-widget stat-card">
-                                <div class="stat-icon"><ion-icon name="flash"></ion-icon></div>
-                                <div class="stat-info">
-                                    <h3>Total Output Power</h3>
-                                    <div class="stat-value"><span id="dash-power">0</span> W</div>
-                                </div>
-                            </div>
-                            <div class="glass-widget stat-card">
-                                <div class="stat-icon battery"><ion-icon name="battery-half"></ion-icon></div>
-                                <div class="stat-info">
-                                    <h3>Battery SOC</h3>
-                                    <div class="stat-value"><span id="dash-soc">0</span> %</div>
-                                    <div class="progress-bar-container">
-                                        <div class="progress-bar" id="dash-soc-bar" style="width: 0%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="glass-widget stat-card">
-                                <div class="stat-icon"><ion-icon name="swap-vertical"></ion-icon></div>
-                                <div class="stat-info">
-                                    <h3>Output Voltage</h3>
-                                    <div class="stat-value"><span id="dash-bus-voltage">0.0</span> V</div>
-                                </div>
-                            </div>
-                            <div class="glass-widget stat-card">
-                                <div class="stat-icon temp"><ion-icon name="thermometer"></ion-icon></div>
-                                <div class="stat-info">
-                                    <h3>Ambient Temp</h3>
-                                    <div class="stat-value"><span id="dash-ambient-temp">0</span> °C</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <!-- BMS TAB -->
-                <div class="tab-pane" id="tab-bms">
-                    <div class="glass-widget mb-2">
-                        <div class="widget-header">
-                            <h3>Battery Specifications</h3>
-                        </div>
-                        <div class="specs-grid">
-                            <div class="spec-row"><span>Total Capacity:</span> <strong
-                                    id="bms-totalCapacity">--</strong></div>
-                            <div class="spec-row"><span>Discharge Cycles:</span> <strong
-                                    id="bms-dischargeCycle">--</strong></div>
-                            <div class="spec-row"><span>Production Date:</span> <strong
-                                    id="bms-productionDate">--</strong></div>
-                            <div class="spec-row"><span>Software Version:</span> <strong
-                                    id="bms-softwareVersion">--</strong></div>
-                            <div class="spec-row"><span>Num Battery Strings:</span> <strong
-                                    id="bms-numberOfBattery">--</strong></div>
-                            <div class="spec-row"><span>Protection Status:</span> <strong
-                                    id="bms-protectionStatus">--</strong></div>
-                            <div class="spec-row"><span>MOSFET Status:</span> <strong
-                                    id="bms-mosfetControlStatus">--</strong></div>
-                        </div>
-                    </div>
-
-                    <div class="bms-split">
-                        <div class="glass-widget">
-                            <div class="widget-header">
-                                <h3>Cell Voltages (V)</h3>
-                            </div>
-                            <div class="cell-grid" id="bms-cell-grid">
-                                <!-- Generated by JS -->
-                            </div>
-                        </div>
-
-                        <div class="glass-widget">
-                            <div class="widget-header">
-                                <h3>NTC Temperatures</h3>
-                            </div>
-                            <div class="ntc-grid" id="bms-ntc-grid">
-                                <!-- Generated by JS -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- RECTIFIER TAB -->
-                <div class="tab-pane" id="tab-rectifier">
-                    <div class="widget-grid">
-                        <div class="glass-widget stat-card">
-                            <div class="stat-info">
-                                <h3>AC Input Voltage</h3>
-                                <div class="stat-value"><span id="rect-acIpVoltageRect">0</span> V</div>
-                            </div>
-                        </div>
-                        <div class="glass-widget stat-card">
-                            <div class="stat-info">
-                                <h3>DC Output Voltage</h3>
-                                <div class="stat-value"><span id="rect-dcOpVoltageRect">0</span> V</div>
-                            </div>
-                        </div>
-                        <div class="glass-widget stat-card">
-                            <div class="stat-info">
-                                <h3>DC Output Current</h3>
-                                <div class="stat-value"><span id="rect-dcOpCurRect">0</span> A</div>
-                            </div>
-                        </div>
-                        <div class="glass-widget stat-card">
-                            <div class="stat-info">
-                                <h3>Output Power</h3>
-                                <div class="stat-value"><span id="rect-outputPowerRect">0</span> W</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="glass-widget mt-2">
-                        <div class="widget-header">
-                            <h3>Rectifier Thermals</h3>
-                        </div>
-                        <div class="thermal-grid">
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="rect-srTemp">0°C</div>
-                                <span>SR Temp</span>
-                            </div>
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="rect-llcTemp">0°C</div>
-                                <span>LLC Temp</span>
-                            </div>
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="rect-pfcTemp">0°C</div>
-                                <span>PFC Temp</span>
-                            </div>
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="rect-ambientTempRect">0°C</div>
-                                <span>Ambient</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MPPT TAB -->
-                <div class="tab-pane" id="tab-mppt">
-                    <div class="widget-grid mb-2">
-                        <div class="glass-widget stat-card">
-                            <div class="stat-info">
-                                <h3>AC Input Voltage</h3>
-                                <div class="stat-value"><span id="mppt-acIpVoltageMppt">0</span> V</div>
-                            </div>
-                        </div>
-                        <div class="glass-widget stat-card">
-                            <div class="stat-info">
-                                <h3>AC Input Current</h3>
-                                <div class="stat-value"><span id="mppt-acIpCurMppt">0</span> A</div>
-                            </div>
-                        </div>
-                        <div class="glass-widget stat-card">
-                            <div class="stat-info">
-                                <h3>DC Output Voltage</h3>
-                                <div class="stat-value"><span id="mppt-dcOpVoltageMppt">0</span> V</div>
-                            </div>
-                        </div>
-                        <div class="glass-widget stat-card">
-                            <div class="stat-info">
-                                <h3>DC Output Current</h3>
-                                <div class="stat-value"><span id="mppt-dcOpCurMppt">0</span> A</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="glass-widget w-half">
-                        <div class="widget-header">
-                            <h3>MPPT Thermals</h3>
-                        </div>
-                        <div class="thermal-grid">
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="mppt-srTempMppt">0°C</div>
-                                <span>SR Temp</span>
-                            </div>
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="mppt-llcTempMppt">0°C</div>
-                                <span>LLC Temp</span>
-                            </div>
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="mppt-pfcTempMppt">0°C</div>
-                                <span>PFC Temp</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CONTROL TAB -->
-                <div class="tab-pane" id="tab-control">
-                    <div class="bms-split">
-                        <div class="glass-widget">
-                            <div class="widget-header">
-                                <h3>LED Controls</h3>
-                            </div>
-                            <div class="control-grid">
-                                <div class="control-item">
-                                    <span>LED D5 (LATA2)</span>
-                                    <label class="switch">
-                                        <input type="checkbox" id="ctrl-ledD5">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                                <div class="control-item">
-                                    <span>LED D6 (LATA3)</span>
-                                    <label class="switch">
-                                        <input type="checkbox" id="ctrl-ledD6">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                                <div class="control-item">
-                                    <span>LED D7 (LATA4)</span>
-                                    <label class="switch">
-                                        <input type="checkbox" id="ctrl-ledD7">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="glass-widget">
-                            <div class="widget-header">
-                                <h3>Analog & Digital IO</h3>
-                            </div>
-                            <div class="specs-grid">
-                                <div class="spec-row"><span>Push Button (8-bit):</span> <strong
-                                        id="ctrl-pushButton">--</strong></div>
-                                <div class="spec-row"><span>Analog Pot 0 (10-bit):</span> <strong
-                                        id="ctrl-analogPot0">--</strong></div>
-                                <div class="spec-row"><span>Analog Pot 1 (10-bit):</span> <strong
-                                        id="ctrl-analogPot1">--</strong></div>
-                                <div class="spec-row"><span>Static Var:</span> <strong id="ctrl-statVar"
-                                        class="font-mono">--</strong></div>
-                                <div class="spec-row">
-                                    <span>LCD Display:</span>
-                                    <input type="text" id="ctrl-lcdDisplay" class="lcd-input" maxlength="15"
-                                        value="Hello World">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
-        </main>
-    </div>
+        </div>
 
-    <!-- Connection Error Modal -->
-    <div id="snmp-error-modal" class="glass-modal hidden">
-        <div class="glass-modal-content">
-            <div class="error-icon-box" style="cursor: pointer;" onclick="dismissErrorModal()">
-                <span class="error-icon">&times;</span>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="brand-title">DELTA POWER CONTROL</div>
+
+                <div class="search-bar">
+                    <ion-icon name="search-outline"></ion-icon>
+                    <input type="text" placeholder="Search...">
+                </div>
+
+                <div class="top-actions">
+                    <button class="btn-primary" id="open-add-system-btn">
+                        <ion-icon name="add-outline"></ion-icon> Add New System
+                    </button>
+
+                    <div class="user-profile">
+                        <img src="https://i.pravatar.cc/150?img=8" alt="Alex R." class="avatar"
+                            style="width: 32px; height: 32px;">
+                        <span class="user-name">Alex R.</span>
+                        <ion-icon name="chevron-down-outline" class="user-dropdown-icon"></ion-icon>
+                    </div>
+
+                    <div class="notification-bell">
+                        <ion-icon name="notifications-outline"></ion-icon>
+                    </div>
+                </div>
             </div>
-            <h2>Connection Lost</h2>
-            <p>Could not connect to the SNMP device. The device or the backend might be offline.</p>
-            <button
-                style="margin-top:20px; padding: 10px 20px; border-radius: 6px; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; cursor: pointer; font-weight: bold; width: 100%; transition: all 0.2s ease;"
-                onclick="dismissErrorModal()" onmouseover="this.style.background='rgba(239, 68, 68, 0.4)'"
-                onmouseout="this.style.background='rgba(239, 68, 68, 0.2)'">
-                Dismiss Warning
-            </button>
+
+            <!-- Dashboard Scroll Area -->
+            <div class="dashboard-scroll">
+                <div class="section-title">OVERVIEW</div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <!-- Stat Card 1 -->
+                    <div class="stat-card" id="total-systems-btn" style="cursor: pointer; transition: background 0.2s;">
+                        <div class="stat-card-header">TOTAL SYSTEMS</div>
+                        <div class="stat-card-body">
+                            <ion-icon name="radio-outline" class="stat-icon-large"></ion-icon>
+                            <div class="stat-value" id="sum-total">0</div>
+                        </div>
+                    </div>
+
+                    <!-- Stat Card 2 -->
+                    <div class="stat-card">
+                        <div class="stat-card-header">ONLINE SYSTEMS</div>
+                        <div class="stat-card-body">
+                            <ion-icon name="checkmark-circle" class="stat-icon-large success"></ion-icon>
+                            <div class="stat-value" id="sum-online">0</div>
+                        </div>
+                    </div>
+
+                    <!-- Stat Card 3 -->
+                    <div class="stat-card">
+                        <div class="stat-card-header">DOWN SYSTEMS</div>
+                        <div class="stat-card-body">
+                            <ion-icon name="warning" class="stat-icon-large error"></ion-icon>
+                            <div class="stat-value" id="sum-offline">0</div>
+                        </div>
+                    </div>
+
+                    <!-- Stat Card 4 -->
+                    <div class="stat-card" style="gap: 0.5rem; justify-content: center; padding: 1.25rem 1.5rem;">
+                        <div class="stat-card-header">POWER USAGE STATS</div>
+                        <div class="stat-details">
+                            <div class="stat-detail-row">
+                                <span>Total:</span>
+                                <span>2.8 MW <svg class="mini-chart" viewBox="0 0 60 20">
+                                        <polyline points="0,15 10,10 20,12 30,5 40,8 50,2 60,6" fill="none"
+                                            stroke="#f59e0b" stroke-width="2" />
+                                    </svg></span>
+                            </div>
+                            <div class="stat-detail-row">
+                                <span>Efficiency:</span>
+                                <span>93% <svg class="mini-chart" viewBox="0 0 60 20">
+                                        <polyline points="0,18 10,15 20,14 30,10 40,12 50,4 60,2" fill="none"
+                                            stroke="#10b981" stroke-width="2" />
+                                    </svg></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Middle Grid (Map & Chart) -->
+                <div class="middle-grid">
+                    <!-- Map Area Placeholder -->
+                    <div class="map-card" style="padding: 0; overflow: hidden; position: relative;">
+                        <div id="map"
+                            style="width: 100%; height: 100%; z-index: 1; border-radius: 12px; background: #0b111e;">
+                        </div>
+
+                        <div class="map-legend"
+                            style="z-index: 1000; bottom: 1.5rem; left: 1.5rem; background: rgba(20, 28, 43, 0.8); padding: 0.5rem 1rem; border-radius: 8px; backdrop-filter: blur(4px);">
+                            <div class="legend-item">
+                                <div class="legend-color green"></div> Online
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color yellow"></div> Warning
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color red"></div> Critical
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Card -->
+                    <div class="chart-card">
+                        <h3>SYSTEM HEALTH BY REGION</h3>
+                        <div class="bar-chart" style="padding-left: 2rem;">
+                            <div class="y-axis">
+                                <span>100</span>
+                                <span>75</span>
+                                <span>50</span>
+                                <span>25</span>
+                                <span>0</span>
+                            </div>
+
+                            <div class="bar-group">
+                                <div class="bar" style="height: 75%;"></div>
+                                <span class="x-label">Cal</span>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar" style="height: 40%;"></div>
+                                <span class="x-label">Sal</span>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar" style="height: 40%;"></div>
+                                <span class="x-label">Cal</span>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar" style="height: 60%;"></div>
+                                <span class="x-label">Cal</span>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar" style="height: 85%;"></div>
+                                <span class="x-label">NLL</span>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar" style="height: 65%;"></div>
+                                <span class="x-label">ludp</span>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar gray" style="height: 28%;"></div>
+                                <span class="x-label">Nfk</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Warnings Table -->
+                <div class="warnings-card">
+                    <h3>RECENT WARNINGS LOG</h3>
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Severity</th>
+                                <th>Timestamp</th>
+                                <th>Tower/Site Name</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>401</td>
+                                <td><span class="badge critical">Critical</span></td>
+                                <td>2021-03-23 1:58:36</td>
+                                <td>Telecom Site 401</td>
+                                <td>Grid power lost</td>
+                            </tr>
+                            <tr>
+                                <td>402</td>
+                                <td><span class="badge warning">Warning</span></td>
+                                <td>2021-03-23 1:58:36</td>
+                                <td>Telecom Site 402</td>
+                                <td>Battery temperature high</td>
+                            </tr>
+                            <tr>
+                                <td>403</td>
+                                <td><span class="badge critical">Critical</span></td>
+                                <td>2021-03-23 1:58:36</td>
+                                <td>Telecom Site 403</td>
+                                <td>Rectifier failure</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="pagination">
+                        <button class="page-btn"><ion-icon name="chevron-back-outline"></ion-icon><ion-icon
+                                name="chevron-back-outline" style="margin-left: -12px;"></ion-icon></button>
+                        <button class="page-btn"><ion-icon name="chevron-back-outline"></ion-icon></button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn"><ion-icon name="chevron-forward-outline"></ion-icon></button>
+                        <button class="page-btn"><ion-icon name="chevron-forward-outline"></ion-icon><ion-icon
+                                name="chevron-forward-outline" style="margin-left: -12px;"></ion-icon></button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script>
-        // Global dismiss fallback ensuring it triggers regardless of app.js state
-        function dismissErrorModal() {
-            const modal = document.getElementById('snmp-error-modal');
-            if (modal) {
-                modal.classList.add('hidden');
-            }
-            if (typeof window !== 'undefined' && window.App && window.App.state) {
-                window.App.state.modalDismissed = true;
-            }
-        }
-    </script>
+    <!-- Add New System Modal -->
+    <div class="modal-overlay hidden" id="add-system-modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Add New System</h3>
+                <button class="modal-close" id="close-add-system-modal"><ion-icon
+                        name="close-outline"></ion-icon></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-system-form">
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label
+                            style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Device
+                            Name</label>
+                        <input type="text" id="new-dev-name" required
+                            style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: var(--text-primary);">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label
+                            style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">IP
+                            Address</label>
+                        <input type="text" id="new-dev-ip" required
+                            style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: var(--text-primary);">
+                    </div>
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div class="form-group" style="flex: 1;">
+                            <label
+                                style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Latitude</label>
+                            <input type="number" step="any" id="new-dev-lat"
+                                style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: var(--text-primary);">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label
+                                style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Longitude</label>
+                            <input type="number" step="any" id="new-dev-lng"
+                                style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: var(--text-primary);">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary"
+                        style="width: 100%; padding: 0.75rem; font-size: 1rem; border: none; cursor: pointer; border-radius: 8px;">Add
+                        System</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
-    <script src="app.js?v=5"></script>
+    <!-- Systems List Modal -->
+    <div class="modal-overlay hidden" id="systems-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>All Configured Systems</h3>
+                <button class="modal-close" id="close-systems-modal"><ion-icon name="close-outline"></ion-icon></button>
+            </div>
+            <div class="modal-body">
+                <table class="custom-table" id="systems-list-table">
+                    <thead>
+                        <tr>
+                            <th>Device Name</th>
+                            <th>IP Address</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Populated via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Details Modal -->
+    <div class="modal-overlay hidden" id="project-details-modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Project Details: Telco Power Control</h3>
+                <button class="modal-close" id="close-details-modal"><ion-icon name="close-outline"></ion-icon></button>
+            </div>
+            <div class="modal-body" style="line-height: 1.6; color: var(--text-primary);">
+                <p><strong>System Name:</strong> Telco Power Control Dashboard v2.1</p>
+                <p><strong>Description:</strong> A real-time SNMP monitoring bridge for remote Telco towers. It tracks
+                    Rectifier, BMS, and MPPT status via OID polling.</p>
+                <p style="margin-top: 1rem;"><strong>Core Features:</strong></p>
+                <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+                    <li>Real-time SNMP polling (Delta MIB support)</li>
+                    <li>Interactive India Map with pulsing status dots</li>
+                    <li>Automatic status-based alerts (Offline/Online tracking)</li>
+                    <li>Service Engineer live chat interface</li>
+                </ul>
+                <p><strong>Tech Stack:</strong> Node.js Backend, Net-SNMP, Express, Leaflet.js Mapping.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Warnings Log Modal -->
+    <div class="modal-overlay hidden" id="warnings-log-modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3>Full Warnings & Faults Log</h3>
+                <button class="modal-close" id="close-warnings-modal"><ion-icon
+                        name="close-outline"></ion-icon></button>
+            </div>
+            <div class="modal-body">
+                <table class="custom-table" id="full-warnings-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Severity</th>
+                            <th>Timestamp</th>
+                            <th>Site Name</th>
+                            <th>Fault Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="full-warnings-body">
+                        <!-- Populated with recent logs -->
+                        <tr class="critical-row">
+                            <td>#ALE-901</td>
+                            <td><span class="badge critical">CRITICAL</span></td>
+                            <td>2026-03-09 11:24:01</td>
+                            <td>Site Alpha</td>
+                            <td>Rectifier Fan Failure</td>
+                        </tr>
+                        <tr>
+                            <td>#ALE-882</td>
+                            <td><span class="badge warning">WARNING</span></td>
+                            <td>2026-03-09 09:12:44</td>
+                            <td>Site Beta</td>
+                            <td>High Temperature Threshold</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="dashboard.js"></script>
 </body>
 
 </html>

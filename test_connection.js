@@ -1,7 +1,7 @@
 const snmp = require('net-snmp');
 
 console.log('--- Delta Rectifier SNMP Diagnostic Tool ---');
-console.log('Target: 192.168.100.11');
+console.log('Target: 192.168.100.12');
 
 const SNMP_COMMUNITY = 'read'; // The community string that succeeded earlier
 const OID_SYS_DESCR = '1.3.6.1.2.1.1.1.0';
