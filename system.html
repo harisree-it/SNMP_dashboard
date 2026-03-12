@@ -356,26 +356,56 @@
                         </div>
                     </div>
 
-                    <div class="glass-widget mt-2">
-                        <div class="widget-header">
-                            <h3>Rectifier Thermals</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;" class="mt-2">
+                        <div class="glass-widget">
+                            <div class="widget-header">
+                                <h3>Rectifier Thermals</h3>
+                            </div>
+                            <div class="thermal-grid">
+                                <div class="thermal-gauge">
+                                    <div class="gauge-value" id="rect-srTemp">0°C</div>
+                                    <span>SR Temp</span>
+                                </div>
+                                <div class="thermal-gauge">
+                                    <div class="gauge-value" id="rect-llcTemp">0°C</div>
+                                    <span>LLC Temp</span>
+                                </div>
+                                <div class="thermal-gauge">
+                                    <div class="gauge-value" id="rect-pfcTemp">0°C</div>
+                                    <span>PFC Temp</span>
+                                </div>
+                                <div class="thermal-gauge">
+                                    <div class="gauge-value" id="rect-ambientTempRect">0°C</div>
+                                    <span>Ambient</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="thermal-grid">
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="rect-srTemp">0°C</div>
-                                <span>SR Temp</span>
+
+                        <div class="glass-widget">
+                            <div class="widget-header">
+                                <h3>Alarms & Warnings</h3>
                             </div>
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="rect-llcTemp">0°C</div>
-                                <span>LLC Temp</span>
-                            </div>
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="rect-pfcTemp">0°C</div>
-                                <span>PFC Temp</span>
-                            </div>
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="rect-ambientTempRect">0°C</div>
-                                <span>Ambient</span>
+                            <div class="specs-grid">
+                                <div class="spec-row">
+                                    <span>Input OVP:</span>
+                                    <strong id="rect-alarm-inputOVP" class="val-success">Normal</strong>
+                                </div>
+                                <div class="spec-row">
+                                    <span>Input UVP:</span>
+                                    <strong id="rect-alarm-inputUVP" class="val-success">Normal</strong>
+                                </div>
+                                <div class="spec-row">
+                                    <span>Shortcircuit Protection:</span>
+                                    <strong id="rect-alarm-shortCircuit" class="val-success">Normal</strong>
+                                </div>
+                                <div class="spec-row">
+                                    <span>Over Temp Protection:</span>
+                                    <strong id="rect-alarm-overTemp" class="val-success">Normal</strong>
+                                </div>
+                                <div class="spec-row">
+                                    <span>Output Overvoltage Protection:</span>
+                                    <strong id="rect-alarm-outputOVP" class="val-success">Normal</strong>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -410,22 +440,52 @@
                         </div>
                     </div>
 
-                    <div class="glass-widget w-half">
-                        <div class="widget-header">
-                            <h3>MPPT Thermals</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div class="glass-widget">
+                            <div class="widget-header">
+                                <h3>MPPT Thermals</h3>
+                            </div>
+                            <div class="thermal-grid">
+                                <div class="thermal-gauge">
+                                    <div class="gauge-value" id="mppt-srTempMppt">0°C</div>
+                                    <span>SR Temp</span>
+                                </div>
+                                <div class="thermal-gauge">
+                                    <div class="gauge-value" id="mppt-llcTempMppt">0°C</div>
+                                    <span>LLC Temp</span>
+                                </div>
+                                <div class="thermal-gauge">
+                                    <div class="gauge-value" id="mppt-pfcTempMppt">0°C</div>
+                                    <span>PFC Temp</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="thermal-grid">
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="mppt-srTempMppt">0°C</div>
-                                <span>SR Temp</span>
+
+                        <div class="glass-widget">
+                            <div class="widget-header">
+                                <h3>Alarms & Warnings</h3>
                             </div>
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="mppt-llcTempMppt">0°C</div>
-                                <span>LLC Temp</span>
-                            </div>
-                            <div class="thermal-gauge">
-                                <div class="gauge-value" id="mppt-pfcTempMppt">0°C</div>
-                                <span>PFC Temp</span>
+                            <div class="specs-grid">
+                                <div class="spec-row">
+                                    <span>Input OVP:</span>
+                                    <strong id="mppt-alarm-inputOVP" class="val-success">Normal</strong>
+                                </div>
+                                <div class="spec-row">
+                                    <span>Input UVP:</span>
+                                    <strong id="mppt-alarm-inputUVP" class="val-success">Normal</strong>
+                                </div>
+                                <div class="spec-row">
+                                    <span>Shortcircuit Protection:</span>
+                                    <strong id="mppt-alarm-shortCircuit" class="val-success">Normal</strong>
+                                </div>
+                                <div class="spec-row">
+                                    <span>Over Temp Protection:</span>
+                                    <strong id="mppt-alarm-overTemp" class="val-success">Normal</strong>
+                                </div>
+                                <div class="spec-row">
+                                    <span>Output Overvoltage Protection:</span>
+                                    <strong id="mppt-alarm-outputOVP" class="val-success">Normal</strong>
+                                </div>
                             </div>
                         </div>
                     </div>

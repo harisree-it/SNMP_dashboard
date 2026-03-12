@@ -49,7 +49,7 @@ class DashboardApp {
             llcTemp: 55, // C
             pfcTemp: 60, // C
             rectifierOnStatus: 1,
-            alarmStatus: 0,
+            rectifierAlarmStatus: 0,
 
             // MPPT
             dcOpVoltageMppt: 5400, // 10mV => 54.00V
@@ -62,6 +62,7 @@ class DashboardApp {
             llcTempMppt: 45,
             pfcTempMppt: 50,
             mpptOnStatus: 1,
+            mpptAlarmStatus: 0,
 
             // Control
             ledD5: 0,

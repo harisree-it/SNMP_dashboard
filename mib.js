@@ -649,7 +649,7 @@ rectifierOnStatus OBJECT-TYPE
         "Rectifier ON Status"
     ::= { rectifier 10 }
 
-alarmStatus OBJECT-TYPE
+rectifierAlarmStatus OBJECT-TYPE
     SYNTAX Integer32
     MAX-ACCESS read-only
     STATUS current
@@ -740,6 +740,14 @@ mpptOnStatus OBJECT-TYPE
     DESCRIPTION 
         "MPPT ON Status"
     ::= { mppt 10 }
+
+mpptAlarmStatus OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION 
+        "Alarm status of the MPPT"
+    ::= { mppt 11 } 
 
 --MPPT over
 --POE start

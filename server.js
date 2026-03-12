@@ -28,7 +28,6 @@ const OIDS = {
     sysDescr: '1.3.6.1.4.1.2254.2.51.1.1.1.1.0',
     sysUpTime: '1.3.6.1.2.1.1.3.0',
     sysName: '1.3.6.1.2.1.1.5.0',
-
     // Delta specific identifying values
     deltaProduct0: '1.3.6.1.4.1.2254.2.51.1.1.1.1.0', // MPPT with Rectifier
     deltaProduct1: '1.3.6.1.4.1.2254.2.51.1.1.1.2.0', // v1.0
@@ -61,6 +60,7 @@ const OIDS = {
     llcTemp: '1.3.6.1.4.1.2254.2.51.1.1.8.8.0',
     pfcTemp: '1.3.6.1.4.1.2254.2.51.1.1.8.9.0',
     rectifierOnStatus: '1.3.6.1.4.1.2254.2.51.1.1.8.10.0',
+    rectifierAlarmStatus: '1.3.6.1.4.1.2254.2.51.1.1.8.11.0',
 
 
     // MPPT
@@ -73,6 +73,9 @@ const OIDS = {
     srTempMppt: '1.3.6.1.4.1.2254.2.51.1.1.9.7.0',
     llcTempMppt: '1.3.6.1.4.1.2254.2.51.1.1.9.8.0',
     pfcTempMppt: '1.3.6.1.4.1.2254.2.51.1.1.9.9.0',
+    mpptOnStatus: '1.3.6.1.4.1.2254.2.51.1.1.9.10.0',
+    mpptAlarmStatus: '1.3.6.1.4.1.2254.2.51.1.1.9.11.0',
+
 
     // Status
     bmsLive: '1.3.6.1.4.1.2254.2.51.1.1.12.1.0',
@@ -109,9 +112,9 @@ function initDefaultState(device) {
         cellBalances: new Array(15).fill(0),
         ntcTemps: new Array(5).fill(0),
         dcOpVoltageRect: 0, dcOpCurRect: 0, acIpVoltageRect: 0, busVoltage: 0, outputPowerRect: 0,
-        ambientTempRect: 0, srTemp: 0, llcTemp: 0, pfcTemp: 0, rectifierOnStatus: 0, alarmStatus: 0,
+        ambientTempRect: 0, srTemp: 0, llcTemp: 0, pfcTemp: 0, rectifierOnStatus: 0, rectifierAlarmStatus: 0,
         dcOpVoltageMppt: 0, dcOpCurMppt: 0, acIpVoltageMppt: 0, acIpCurMppt: 0, outputPowerMppt: 0,
-        ambientTempMppt: 0, srTempMppt: 0, llcTempMppt: 0, pfcTempMppt: 0, mpptOnStatus: 0,
+        ambientTempMppt: 0, srTempMppt: 0, llcTempMppt: 0, pfcTempMppt: 0, mpptOnStatus: 0, mpptAlarmStatus: 0,
         ledD5: 0, ledD6: 0, ledD7: 0, pushButton: 0, analogPot0: 0, analogPot1: 0, statVar: "", lcdDisplay: "",
         lastUpdate: null,
         status: "offline" // online, offline, polling
