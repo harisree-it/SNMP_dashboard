@@ -416,6 +416,21 @@ class DashboardApp {
         this.setText('rect-pfcTemp', this.state.pfcTemp + '°C');
         this.setText('rect-ambientTempRect', this.state.ambientTempRect + '°C');
 
+        const setAlarmState = (id, isFault) => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.textContent = isFault ? 'Fault' : 'Normal';
+                el.className = isFault ? 'val-error' : 'val-success';
+            }
+        };
+
+        const rectAlarms = parseInt(this.state.rectifierAlarmStatus, 10) || 0;
+        setAlarmState('rect-alarm-inputOVP', rectAlarms & (1 << 0));
+        setAlarmState('rect-alarm-inputUVP', rectAlarms & (1 << 1));
+        setAlarmState('rect-alarm-shortCircuit', rectAlarms & (1 << 5));
+        setAlarmState('rect-alarm-overTemp', rectAlarms & (1 << 6));
+        setAlarmState('rect-alarm-outputOVP', rectAlarms & (1 << 7));
+
         // --- MPPT TAB ---
         this.setText('mppt-acIpVoltageMppt', this.state.acIpVoltageMppt);
         this.setText('mppt-acIpCurMppt', this.state.acIpCurMppt);
@@ -425,6 +440,13 @@ class DashboardApp {
         this.setText('mppt-srTempMppt', this.state.srTempMppt + '°C');
         this.setText('mppt-llcTempMppt', this.state.llcTempMppt + '°C');
         this.setText('mppt-pfcTempMppt', this.state.pfcTempMppt + '°C');
+
+        const mpptAlarms = parseInt(this.state.mpptAlarmStatus, 10) || 0;
+        setAlarmState('mppt-alarm-inputOVP', mpptAlarms & (1 << 0));
+        setAlarmState('mppt-alarm-inputUVP', mpptAlarms & (1 << 1));
+        setAlarmState('mppt-alarm-shortCircuit', mpptAlarms & (1 << 5));
+        setAlarmState('mppt-alarm-overTemp', mpptAlarms & (1 << 6));
+        setAlarmState('mppt-alarm-outputOVP', mpptAlarms & (1 << 7));
 
         // --- CONTROL TAB ---
         this.setText('ctrl-pushButton', this.state.pushButton === 0 ? 'Closed' : 'Open');

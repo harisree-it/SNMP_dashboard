@@ -467,6 +467,11 @@ body {
     text-shadow: 0 0 10px rgba(210, 153, 34, 0.5);
 }
 
+.val-error {
+    color: var(--error) !important;
+    text-shadow: 0 0 10px rgba(248, 81, 73, 0.5);
+}
+
 /* Grids */
 .bms-split {
     display: grid;
