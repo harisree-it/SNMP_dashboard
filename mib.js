@@ -693,13 +693,21 @@ acIpCurMppt OBJECT-TYPE
         "AC input current of the MPPT"
     ::= { mppt 4 }
 
+mpptLimitPower OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION 
+        "Output Power Limit of the MPPT"
+    ::= { mppt 5 }
+
 outputPowerMppt OBJECT-TYPE
     SYNTAX Integer32
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION 
         "Output Power of the MPPT"
-    ::= { mppt 5 }
+    ::= { mppt 6 }
 
 ambientTempMppt OBJECT-TYPE
     SYNTAX Integer32
@@ -707,7 +715,7 @@ ambientTempMppt OBJECT-TYPE
     STATUS current
     DESCRIPTION 
         "Ambient Temperature of MPPT"
-    ::= { mppt 6 }
+    ::= { mppt 7 }
 
 srTempMppt OBJECT-TYPE
     SYNTAX Integer32
@@ -715,7 +723,7 @@ srTempMppt OBJECT-TYPE
     STATUS current
     DESCRIPTION 
         "SR Temperature of MPPT"
-    ::= { mppt 7 }
+    ::= { mppt 8 }
 
 llcTempMppt OBJECT-TYPE
     SYNTAX Integer32
@@ -723,7 +731,7 @@ llcTempMppt OBJECT-TYPE
     STATUS current
     DESCRIPTION 
         "LLC Temperature of MPPT"
-    ::= { mppt 8 }    
+    ::= { mppt 9 }    
     
 pfcTempMppt OBJECT-TYPE
     SYNTAX Integer32
@@ -731,7 +739,7 @@ pfcTempMppt OBJECT-TYPE
     STATUS current
     DESCRIPTION 
         "PFC Temperature of MPPT"
-    ::= { mppt 9 }
+    ::= { mppt 10 }
 
 mpptOnStatus OBJECT-TYPE
     SYNTAX INTEGER { off(0), on(1) }
@@ -739,7 +747,7 @@ mpptOnStatus OBJECT-TYPE
     STATUS current
     DESCRIPTION 
         "MPPT ON Status"
-    ::= { mppt 10 }
+    ::= { mppt 11 }
 
 mpptAlarmStatus OBJECT-TYPE
     SYNTAX Integer32
@@ -747,7 +755,7 @@ mpptAlarmStatus OBJECT-TYPE
     STATUS current
     DESCRIPTION 
         "Alarm status of the MPPT"
-    ::= { mppt 11 } 
+    ::= { mppt 12 } 
 
 --MPPT over
 --POE start

@@ -57,6 +57,7 @@ class DashboardApp {
             acIpVoltageMppt: 120, // V (Solar input)
             acIpCurMppt: 5, // A
             outputPowerMppt: 540, // W
+            mpptLimitPower: 100,
             ambientTempMppt: 32,
             srTempMppt: 40,
             llcTempMppt: 45,
@@ -119,6 +120,59 @@ class DashboardApp {
         document.getElementById('ctrl-lcdDisplay').addEventListener('input', (e) => {
             if (e.target.value.length <= 15) {
                 this.state.lcdDisplay = e.target.value;
+            }
+        });
+
+        // MPPT Power Limit
+        document.getElementById('btn-setMpptPowerLimit').addEventListener('click', async () => {
+            const inputEl = document.getElementById('mppt-powerLimitInput');
+            const val = inputEl.value;
+            if (!val || isNaN(val)) {
+                alert("Please enter a valid power limit in Watts.");
+                return;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const deviceId = urlParams.get('id');
+            if (!deviceId) return;
+
+            try {
+                const btn = document.getElementById('btn-setMpptPowerLimit');
+                const origText = btn.textContent;
+                btn.textContent = "Sending...";
+                btn.disabled = true;
+
+                const response = await fetch(`http://localhost:3000/api/set/${deviceId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        //key: 'outputPowerMppt',
+                        key: 'mpptLimitPower',
+                        value: parseInt(val, 10),
+                        type: 'integer'
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        alert("Power limit sent successfully!");
+                        inputEl.value = '';
+                    } else {
+                        alert("Failed to set power limit: " + result.error);
+                    }
+                } else {
+                    alert("Error sending request to backend.");
+                }
+
+                btn.textContent = origText;
+                btn.disabled = false;
+            } catch (error) {
+                console.error("Error setting MPPT power limit:", error);
+                alert("Network error.");
+                const btn = document.getElementById('btn-setMpptPowerLimit');
+                btn.textContent = "Set";
+                btn.disabled = false;
             }
         });
 
@@ -222,7 +276,7 @@ class DashboardApp {
         if (connBadge) {
             connBadge.textContent = this.state.isConnected ? 'Connected: ' + this.state.sysDescr : 'Not Connected';
             if (this.state.isConnected) {
-                connBadge.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
+                connBadge.style.backgroundColor = 'rgba(255, 255, 255, 1)';
                 connBadge.style.color = '#10b981';
                 connBadge.style.border = '1px solid #10b981';
             } else {
