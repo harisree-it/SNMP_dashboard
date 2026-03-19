@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delta Power - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #0b111e;
+            color: #ffffff;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .login-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .login-panel {
+            flex: 0 0 450px;
+            background-color: #121927;
+            padding: 3rem 4rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 15px 0 40px rgba(0,0,0,0.8);
+        }
+
+        .login-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 6rem;
+        }
+
+        .login-header ion-icon {
+            color: #10b981;
+            font-size: 1.5rem;
+        }
+
+        .login-form-container {
+            margin-bottom: 4rem;
+        }
+
+        .login-form-container h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-form-container p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: #10b981;
+        }
+
+        .form-options {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .form-options input[type="checkbox"] {
+            margin-right: 8px;
+            accent-color: #10b981;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 0.9rem;
+            background-color: #10b981;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .login-btn:hover {
+            background-color: #059669;
+        }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        .error-msg.active {
+            display: block;
+        }
+
+        .globe-panel {
+            flex: 1;
+            position: relative;
+            background: #0b111e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Prevent zooming/scrolling on globe */
+        #globe-viz {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: translateX(15%) scale(1.25);
+            cursor: move;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Left Panel -->
+        <div class="login-panel">
+            <div class="login-header">
+                <ion-icon name="flash-outline"></ion-icon>
+                <span>Delta Power</span>
+            </div>
+            
+            <div class="login-form-container">
+                <h1>Login</h1>
+                <p>Step into the world of digital assets and decentralized power systems.</p>
+                
+                <form id="login-form">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="username" placeholder="admin" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    
+                    <div class="form-options">
+                        <label style="cursor: pointer; display: flex; align-items: center;">
+                            <input type="checkbox"> Remember me
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="login-btn">Login</button>
+                    <div id="login-error" class="error-msg">Invalid username or password.</div>
+                </form>
+            </div>
+            
+            <div style="color: #64748b; font-size: 0.75rem; margin-top: auto;">
+                &copy; Delta Power. All rights reserved.
+            </div>
+        </div>
+        
+        <!-- Right Panel (Globe) -->
+        <div class="globe-panel">
+            <div id="globe-viz"></div>
+        </div>
+    </div>
+
+    <!-- Scripts for Globe and Login Logic -->
+    <script src="https://unpkg.com/three"></script>
+    <script src="https://unpkg.com/globe.gl"></script>
+    <script src="login.js"></script>
+</body>
+</html>

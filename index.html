@@ -2,6 +2,11 @@
 <html lang="en">
 
 <head>
+    <script>
+        if (!sessionStorage.getItem('isLoggedIn') && !localStorage.getItem('isLoggedIn')) {
+            window.location.href = 'login.html';
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delta Power Control</title>
@@ -28,7 +33,7 @@
                 <div class="nav-icon" id="nav-warnings"><ion-icon name="notifications-outline"></ion-icon></div>
             </div>
 
-            <div class="nav-icon nav-icon-bottom"><ion-icon name="log-out-outline"></ion-icon></div>
+            <div class="nav-icon nav-icon-bottom" onclick="sessionStorage.removeItem('isLoggedIn'); localStorage.removeItem('isLoggedIn'); window.location.href='login.html';"><ion-icon name="log-out-outline"></ion-icon></div>
         </div>
 
         <!-- Sidebar Chat -->
@@ -155,11 +160,29 @@
                         <ion-icon name="add-outline"></ion-icon> Add New System
                     </button>
 
-                    <div class="user-profile">
-                        <img src="https://i.pravatar.cc/150?img=8" alt="Alex R." class="avatar"
-                            style="width: 32px; height: 32px;">
-                        <span class="user-name">Alex R.</span>
-                        <ion-icon name="chevron-down-outline" class="user-dropdown-icon"></ion-icon>
+                    <div class="user-profile-container" style="position: relative;">
+                        <div class="user-profile" id="user-profile-btn">
+                            <img src="https://i.pravatar.cc/150?img=8" alt="Admin" class="avatar"
+                                style="width: 32px; height: 32px;">
+                            <span class="user-name">Admin</span>
+                            <ion-icon name="chevron-down-outline" class="user-dropdown-icon"></ion-icon>
+                        </div>
+                        
+                        <!-- Dropdown Menu -->
+                        <div class="profile-dropdown hidden" id="profile-dropdown">
+                            <div class="dropdown-header">
+                                <img src="https://i.pravatar.cc/150?img=8" alt="Admin" class="avatar" style="width: 48px; height: 48px;">
+                                <div class="dropdown-user-info">
+                                    <strong>Admin</strong>
+                                    <span>System Administrator</span>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item" id="dropdown-logout-btn">
+                                <ion-icon name="log-out-outline"></ion-icon>
+                                Logout
+                            </button>
+                        </div>
                     </div>
 
                     <div class="notification-bell">

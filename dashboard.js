@@ -344,6 +344,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Profile Dropdown Logic
+    const userProfileBtn = document.getElementById('user-profile-btn');
+    const profileDropdown = document.getElementById('profile-dropdown');
+    const dropdownLogoutBtn = document.getElementById('dropdown-logout-btn');
+
+    if (userProfileBtn && profileDropdown) {
+        userProfileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!profileDropdown.contains(e.target) && !userProfileBtn.contains(e.target)) {
+                profileDropdown.classList.add('hidden');
+            }
+        });
+    }
+
+    if (dropdownLogoutBtn) {
+        dropdownLogoutBtn.addEventListener('click', () => {
+            sessionStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('isLoggedIn');
+            window.location.href = 'login.html';
+        });
+    }
+
     // Poll every 5 seconds
     fetchDevices();
     setInterval(fetchDevices, 5000);

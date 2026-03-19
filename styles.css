@@ -401,6 +401,85 @@ body {
     font-size: 0.8rem;
 }
 
+/* Profile Dropdown */
+.user-profile-container {
+    position: relative;
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 250px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem 0;
+    transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+}
+
+.profile-dropdown.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    pointer-events: none;
+}
+
+.dropdown-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.dropdown-user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-user-info strong {
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.dropdown-user-info span {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 0.5rem 0;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+    text-align: left;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(255,255,255,0.05);
+}
+
+.dropdown-item ion-icon {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+}
+
 .notification-bell {
     font-size: 1.25rem;
     color: var(--text-secondary);
