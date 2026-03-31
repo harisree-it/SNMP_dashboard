@@ -31,9 +31,14 @@ A real-time, responsive web dashboard built in Node.js, Express, and Vanilla JS 
 
 ## Version History
 
-- **v1.3.0** (Current Release)
+- **v1.3.1** (Current Release)
+  - Integrated **Power over Ethernet (PoE)** output metrics tracking and isolated it into a dedicated GUI layout block.
+  - Linked the Power Topology SVG animations directly to dynamic PoE voltage outputs securely.
+  - Formulated temporary fallback calculations for MPPT Input Current (`1.05 * Vout * Iout / Vin`) to prevent NaN UI breakage during demos.
+  - Scaffolded dynamic thermal offset generation for Rectifier and MPPT modules routing off actual Ambient and BMS base sensors for realistic UI presentation.
+- **v1.3.0** (Previous Release)
   - Updated UI, layout, and added login flow.
-- **v1.2.0** (Previous Release)
+- **v1.2.0**
 - **v1.1.0**
   - Implemented multi-device support, polling configuration allowing multiple SNMP target systems (e.g. Site Alpha, Site Beta).
   - Introduced fail-fast consecutive timeout tracking in SNMP polling to quickly offline unresponsive targets without waiting for the full OID queue to timeout.
