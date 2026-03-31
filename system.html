@@ -55,7 +55,7 @@
                 </button>
                 <button class="nav-item" data-tab="mppt">
                     <ion-icon name="sunny-outline"></ion-icon>
-                    MPPT
+                    MPPT + PoE
                 </button>
                 <button class="nav-item" data-tab="control">
                     <ion-icon name="options-outline"></ion-icon>
@@ -418,6 +418,11 @@
 
                 <!-- MPPT TAB -->
                 <div class="tab-pane" id="tab-mppt">
+                    <div class="section-title"
+                        style="margin-bottom: 20px; font-size: 1.25rem; font-weight: 600; color: var(--accent-blue); display: flex; align-items: center; gap: 10px;">
+                        <ion-icon name="sunny-outline"></ion-icon> Maximum Power Point Tracking (MPPT) Converter
+                    </div>
+
                     <div class="widget-grid mb-2">
                         <div class="glass-widget stat-card">
                             <div class="stat-info">
@@ -461,7 +466,7 @@
                                 </div>
                                 <div class="thermal-gauge">
                                     <div class="gauge-value" id="mppt-pfcTempMppt">0°C</div>
-                                    <span>PFC Temp</span>
+                                    <span>Boost Temp</span>
                                 </div>
                             </div>
                         </div>
@@ -503,10 +508,34 @@
                                 <div class="spec-row">
                                     <span>Power Limit (W):</span>
                                     <div style="display: flex; gap: 10px; align-items: center;">
-                                        <input type="number" id="mppt-powerLimitInput" class="lcd-input" style="width: 100px; text-align: center;" placeholder="e.g. 500">
-                                        <button id="btn-setMpptPowerLimit" style="padding: 5px 15px; background: rgba(88, 166, 255, 0.2); border: 1px solid rgba(88, 166, 255, 0.4); border-radius: 4px; color: var(--text-primary); cursor: pointer; transition: all 0.2s;">Set</button>
+                                        <input type="number" id="mppt-powerLimitInput" class="lcd-input"
+                                            style="width: 100px; text-align: center;" placeholder="e.g. 500">
+                                        <button id="btn-setMpptPowerLimit"
+                                            style="padding: 5px 15px; background: rgba(88, 166, 255, 0.2); border: 1px solid rgba(88, 166, 255, 0.4); border-radius: 4px; color: var(--text-primary); cursor: pointer; transition: all 0.2s;">Set</button>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin: 40px 0 20px; border-top: 1px solid rgba(255, 255, 255, 0.1);"></div>
+
+                    <div class="section-title"
+                        style="margin-bottom: 20px; font-size: 1.25rem; font-weight: 600; color: var(--accent-blue); display: flex; align-items: center; gap: 10px;">
+                        <ion-icon name="wifi-outline"></ion-icon> Power over Ethernet (PoE) Converter
+                    </div>
+
+                    <div class="widget-grid mb-2">
+                        <div class="glass-widget stat-card" style="grid-column: span 2;">
+                            <div class="stat-info">
+                                <h3>DC Output Voltage</h3>
+                                <div class="stat-value"><span id="poe-dcOpVoltage">0.00</span> V</div>
+                            </div>
+                        </div>
+                        <div class="glass-widget stat-card" style="grid-column: span 2;">
+                            <div class="stat-info">
+                                <h3>DC Output Current</h3>
+                                <div class="stat-value"><span id="poe-dcOpCur">0.00</span> A</div>
                             </div>
                         </div>
                     </div>
