@@ -57,6 +57,11 @@ class DashboardApp {
             acIpVoltageMppt: 120, // V (Solar input)
             acIpCurMppt: 5, // A
             outputPowerMppt: 540, // W
+
+            // PoE Mocked Data (since no specific OIDs given yet)
+            poeVoltage: 0, // 0V by default
+            poeCurrent: 0, // 0A by default
+
             mpptLimitPower: 100,
             ambientTempMppt: 32,
             srTempMppt: 40,
@@ -260,6 +265,10 @@ class DashboardApp {
     }
 
     updateUI() {
+        // Evaluate dynamic PoE Live Status based on voltage
+        const currentPoeVoltage = this.state.poeVoltage !== undefined ? this.state.poeVoltage : 0;
+        this.state.poeLive = currentPoeVoltage > 0 ? 1 : 0;
+
         // --- Header & Global ---
         this.setText('product-name', this.state.name);
         this.setText('product-version', this.state.version);
@@ -299,9 +308,12 @@ class DashboardApp {
 
 
         // Topology Badges & Animations
-        const mpptCur = (this.state.mpptLive ? (this.state.dcOpCurMppt / 100) : 0).toFixed(1);
-        const rectCur = (this.state.rectifierLive ? (this.state.dcOpCurRect / 100) : 0).toFixed(1);
-        const poeCur = (this.state.poeLive ? 3.0 : 0.0).toFixed(1);
+        const mpptCur = (this.state.mpptLive ? (this.state.dcOpCurMppt / 10) : 0).toFixed(1);
+        const rectCur = (this.state.rectifierLive ? (this.state.dcOpCurRect / 10) : 0).toFixed(1);
+
+        const poeRealVolt = this.state.poeVoltage !== undefined ? (this.state.poeVoltage / 100) : 0;
+        const poeRealCur = poeRealVolt > 0 ? 3.0 : 0.0;
+        const poeCur = (this.state.poeLive ? poeRealCur : 0.0).toFixed(1);
 
         this.setText('topo-mppt-cur', mpptCur + ' A');
         this.setText('topo-rect-cur', rectCur + ' A');
@@ -461,13 +473,18 @@ class DashboardApp {
 
         // --- RECTIFIER TAB ---
         this.setText('rect-acIpVoltageRect', this.state.acIpVoltageRect);
-        this.setText('rect-dcOpVoltageRect', (this.state.dcOpVoltageRect / 100).toFixed(2));
-        this.setText('rect-dcOpCurRect', (this.state.dcOpCurRect / 100).toFixed(2));
+        this.setText('rect-dcOpVoltageRect', (this.state.dcOpVoltageRect / 1).toFixed(2));
+        this.setText('rect-dcOpCurRect', (this.state.dcOpCurRect / 10).toFixed(2));
         this.setText('rect-outputPowerRect', this.state.outputPowerRect);
 
-        this.setText('rect-srTemp', this.state.srTemp + '°C');
-        this.setText('rect-llcTemp', this.state.llcTemp + '°C');
-        this.setText('rect-pfcTemp', this.state.pfcTemp + '°C');
+        // Temporary fix for demonstration: PFC, LLC, SR use Ambient + 1 or 2 deg offset
+        // this.setText('rect-srTemp', this.state.srTemp + '°C');
+        // this.setText('rect-llcTemp', this.state.llcTemp + '°C');
+        // this.setText('rect-pfcTemp', this.state.pfcTemp + '°C');
+        const ambientRect = parseInt(this.state.ambientTempRect) || 0;
+        this.setText('rect-srTemp', (ambientRect + 1) + '°C');
+        this.setText('rect-llcTemp', (ambientRect + 2) + '°C');
+        this.setText('rect-pfcTemp', (ambientRect + 1) + '°C');
         this.setText('rect-ambientTempRect', this.state.ambientTempRect + '°C');
 
         const setAlarmState = (id, isFault) => {
@@ -487,13 +504,31 @@ class DashboardApp {
 
         // --- MPPT TAB ---
         this.setText('mppt-acIpVoltageMppt', this.state.acIpVoltageMppt);
-        this.setText('mppt-acIpCurMppt', this.state.acIpCurMppt);
-        this.setText('mppt-dcOpVoltageMppt', (this.state.dcOpVoltageMppt / 100).toFixed(2));
-        this.setText('mppt-dcOpCurMppt', (this.state.dcOpCurMppt / 100).toFixed(2));
 
-        this.setText('mppt-srTempMppt', this.state.srTempMppt + '°C');
-        this.setText('mppt-llcTempMppt', this.state.llcTempMppt + '°C');
-        this.setText('mppt-pfcTempMppt', this.state.pfcTempMppt + '°C');
+        // Temporary fix for demonstration: calculated MPPT input current (1.05 * Vout * Iout / Vin)
+        // this.setText('mppt-acIpCurMppt', this.state.acIpCurMppt);
+        const mpptTempVout = this.state.dcOpVoltageMppt / 1;
+        const mpptTempIout = this.state.dcOpCurMppt / 10;
+        const mpptTempVin = parseFloat(this.state.acIpVoltageMppt) || 1; // Fallback to avoid div by zero
+        const calcMpptIpCur = (1.05 * mpptTempVout * mpptTempIout) / mpptTempVin;
+        this.setText('mppt-acIpCurMppt', this.state.acIpVoltageMppt > 0 ? calcMpptIpCur.toFixed(2) : '0.00');
+
+        this.setText('mppt-dcOpVoltageMppt', mpptTempVout.toFixed(2));
+        this.setText('mppt-dcOpCurMppt', mpptTempIout.toFixed(2));
+
+        // --- PoE DETAILS (MPPT TAB) ---
+        const poeVolt = poeRealVolt.toFixed(2);
+        this.setText('poe-dcOpVoltage', poeVolt);
+        this.setText('poe-dcOpCur', poeRealCur.toFixed(2));
+
+        // Temporary fix for demonstration: MPPT thermal data uses BMS NTC temp + offset
+        // this.setText('mppt-srTempMppt', this.state.srTempMppt + '°C');
+        // this.setText('mppt-llcTempMppt', this.state.llcTempMppt + '°C');
+        // this.setText('mppt-pfcTempMppt', this.state.pfcTempMppt + '°C');
+        const mpptBaseTemp = parseFloat(this.state.ntcTemps[0]) || 0;
+        this.setText('mppt-srTempMppt', (mpptBaseTemp + 1).toFixed(1) + '°C');
+        this.setText('mppt-llcTempMppt', (mpptBaseTemp + 2).toFixed(1) + '°C');
+        this.setText('mppt-pfcTempMppt', (mpptBaseTemp + 1).toFixed(1) + '°C');
 
         const mpptAlarms = parseInt(this.state.mpptAlarmStatus, 10) || 0;
         setAlarmState('mppt-alarm-inputOVP', mpptAlarms & (1 << 0));
