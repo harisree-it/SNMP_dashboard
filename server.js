@@ -151,7 +151,10 @@ function pollAllDevices() {
 
     DEVICES.forEach(device => {
         let state = deviceStates[device.id];
-        state.status = "polling";
+        // Only mark as polling if we aren't already actively online tracking it
+        if (state.status !== "online") {
+            state.status = "polling";
+        }
         pollSingleDevice(device, state, () => {
             pendingDevices--;
             if (pendingDevices === 0) {
@@ -177,9 +180,19 @@ function pollSingleDevice(device, stateCache, onComplete) {
             stateCache.lastUpdate = new Date().toISOString();
 
             if (hasAnySuccess) {
+                stateCache.abortCount = 0;
                 stateCache.status = "online";
                 console.log(`[${device.id}] Cycle Complete: Found ${successCount}/${keys.length} valid variables.`);
+            } else if (consecutiveFailures >= MAX_CONSECUTIVE_FAILURES && currentIndex < keys.length) {
+                stateCache.abortCount = (stateCache.abortCount || 0) + 1;
+                if (stateCache.abortCount > 5) {
+                    stateCache.status = "offline";
+                    console.log(`[${device.id}] Cycle Aborted early 5 times. Offline.`);
+                } else {
+                    console.log(`[${device.id}] Cycle Aborted early (${stateCache.abortCount}/5). Keep old status.`);
+                }
             } else {
+                stateCache.abortCount = 0;
                 stateCache.status = "offline";
                 console.log(`[${device.id}] Cycle Complete: Offline (No variables responding).`);
             }
@@ -232,7 +245,7 @@ function pollSingleDevice(device, stateCache, onComplete) {
 }
 
 // Start Background Polling every 5 seconds (to allow the loops to finish)
-setInterval(pollAllDevices, 2000);
+setInterval(pollAllDevices, 500);
 pollAllDevices();
 
 // --- API Endpoints ---

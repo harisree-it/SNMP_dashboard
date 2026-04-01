@@ -36,11 +36,11 @@ class DashboardApp {
             // BMS Cells & Temps
             cellVoltages: new Array(15).fill(3200), // mV
             cellBalances: new Array(15).fill(0), // 0:off, 1:on
-            ntcTemps: new Array(5).fill(250), // 0.1K => 25.0 C (approx 298K, but let's assume it means 25.0C in UI)
+            ntcTemps: new Array(5).fill(35), // 0.1K => 25.0 C (approx 298K, but let's assume it means 25.0C in UI)
 
             // Rectifier
             dcOpVoltageRect: 5400, // 10mV => 54.00V
-            dcOpCurRect: 2000, // 10mA => 20.00A
+            dcOpCurRect: 3, // 10mA => 20.00A
             acIpVoltageRect: 230, // V
             busVoltage: 380, // V
             outputPowerRect: 1080, // W
@@ -285,7 +285,7 @@ class DashboardApp {
         if (connBadge) {
             connBadge.textContent = this.state.isConnected ? 'Connected: ' + this.state.sysDescr : 'Not Connected';
             if (this.state.isConnected) {
-                connBadge.style.backgroundColor = 'rgba(255, 255, 255, 1)';
+                connBadge.style.backgroundColor = 'rgba(0, 58, 5, 1)';
                 connBadge.style.color = '#10b981';
                 connBadge.style.border = '1px solid #10b981';
             } else {
@@ -296,6 +296,8 @@ class DashboardApp {
         }
 
         // --- ERROR MODAL ---
+        // Commented for demo purpose
+        /*
         const errorModal = document.getElementById('snmp-error-modal');
         if (errorModal) {
             if (this.state.isConnected) {
@@ -305,11 +307,36 @@ class DashboardApp {
                 errorModal.classList.remove('hidden');
             }
         }
+        */
 
 
         // Topology Badges & Animations
-        const mpptCur = (this.state.mpptLive ? (this.state.dcOpCurMppt / 10) : 0).toFixed(1);
-        const rectCur = (this.state.rectifierLive ? (this.state.dcOpCurRect / 10) : 0).toFixed(1);
+        // MPPT Sensed I to Actual I mapping
+        const applyMpptGain = (sensedI) => {
+            if (sensedI <= 1.0) return 0; // Deadband to avoid ghost currents considering c = -1.484
+            return Math.max(0, (sensedI * 1.0891) - 1.4840);
+        };
+        const rawMpptSensed = this.state.dcOpCurMppt / 10;
+        const mpptCurNum = this.state.mpptLive ? applyMpptGain(rawMpptSensed) : 0;
+
+        const mpptCur = mpptCurNum.toFixed(1);
+
+        // Rectifier Sensed I to Actual I mapping (Linear Regression from light load table)
+        const applyRectGain = (sensedI) => {
+            if (sensedI <= 0.9) return 0; // Deadband to prevent ghost currents
+            return Math.max(0, (sensedI * 1.4822) - 1.3798);
+        };
+        const rawRectSensed = this.state.rectifierLive ? (this.state.dcOpCurRect / 10) : 0;
+        const rectActualI = this.state.rectifierLive ? applyRectGain(rawRectSensed) : 0;
+
+        if (!this.rectCurHistory) this.rectCurHistory = [];
+        this.rectCurHistory.push(rectActualI);
+        if (this.rectCurHistory.length > 5) {
+            this.rectCurHistory.shift();
+        }
+        const avgRectCur = this.rectCurHistory.reduce((a, b) => a + b, 0) / this.rectCurHistory.length;
+
+        const rectCur = avgRectCur.toFixed(1);
 
         const poeRealVolt = this.state.poeVoltage !== undefined ? (this.state.poeVoltage / 100) : 0;
         const poeRealCur = poeRealVolt > 0 ? 3.0 : 0.0;
@@ -356,37 +383,29 @@ class DashboardApp {
         toggleSignalColor('poe-signal-icon', poeActive);
 
 
-        let raw = this.state.dischargingCurrent;
-
-        // convert unsigned 16-bit → signed
-        let signed = raw > 32767 ? raw - 65536 : raw;
-
-        // Apply derived linear conversion:
-        // Points: (-1831, 2.2), (-1783, 2.7), (-1701, 3.7)
-        // Slope m = (3.7 - 2.2) / (-1701 - (-1831)) = 1.5 / 130 ≈ 0.011538
-        // However, there is likely a simpler relationship. Let's look closer:
-        // Δsigned = 48 -> Δcurrent = 0.5 (1/96)
-        // Δsigned = 130 -> Δcurrent = 1.5 (1/86.6)
-        // Let's use the line of best fit. Or simple observation:
-        // -1831 * 0.0115 + b = 2.2 -> b = 23.2
-
-        let dischargeVal = 0;
-        if (signed < 0) {
-            // Rough interpolation based on the provided points
-            // 2.2A @ -1831 (63705)
-            // 2.7A @ -1783 (63753)
-            // 3.7A @ -1701 (63835)
-            dischargeVal = (0.0115 * signed) + 23.25;
-
-            // It might also just be a simple scaling of the signed value if there's an offset.
-            // But let's use the linear regression that closely hits the target points.
-        } else if (raw > 0) {
-            // Fallback for normal values if it's not negative
-            dischargeVal = raw / 100;
-        }
+        // Sensed I to Actual I mapping (Linear Regression from calibration table)
+        // m = 0.8778, c = 0.0182
+        const applyBatteryGain = (sensedI) => {
+            if (sensedI <= 0.1) return 0; // Deadband to prevent ghost currents
+            return (sensedI * 0.8778) + 0.0182;
+        };
 
         const isCharging = this.state.chargingCurrent > 0;
-        const battCur = isCharging ? (this.state.chargingCurrent / 100) : dischargeVal;
+        const rawChargeSensed = (this.state.chargingCurrent * 1.12) / 100;
+
+        let rawDischargeSensed = 0;
+        let raw = this.state.dischargingCurrent;
+        let signed = raw > 32767 ? raw - 65536 : raw;
+        // The BMS sends weird offset negative values for discharging. 
+        // The previously derived formula (0.0115 * signed + 23.25) generated the "Sensed I".
+        if (signed < 0) {
+            rawDischargeSensed = (0.0115 * signed) + 23.25;
+        } else {
+            rawDischargeSensed = raw / 100;
+        }
+
+        const sensedCur = isCharging ? rawChargeSensed : rawDischargeSensed;
+        const battCur = applyBatteryGain(sensedCur);
 
         let battHtml = `<span id="topo-batt-cur">${Math.abs(battCur).toFixed(1)} A</span><br><span style="font-size: 0.65rem; color: var(--text-secondary);">${isCharging ? 'charging' : (battCur > 0 ? 'discharging' : 'idle')}</span>`;
         const battBadgeParent = document.getElementById('topo-batt-cur')?.parentElement;
@@ -420,7 +439,7 @@ class DashboardApp {
         const totalPwr = (busVoltage * loadCur).toFixed(0);
         this.setText('dash-power', totalPwr);
         this.setText('dash-bus-voltage', busVoltage);
-        this.setText('dash-ambient-temp', this.state.ambientTempRect);
+        this.setText('dash-ambient-temp', this.state.ntcTemps[1]);
 
         // SOC Formatter
         const currentSoc = this.state.remainingSoc.toFixed(1);
@@ -474,7 +493,7 @@ class DashboardApp {
         // --- RECTIFIER TAB ---
         this.setText('rect-acIpVoltageRect', this.state.acIpVoltageRect);
         this.setText('rect-dcOpVoltageRect', (this.state.dcOpVoltageRect / 1).toFixed(2));
-        this.setText('rect-dcOpCurRect', (this.state.dcOpCurRect / 10).toFixed(2));
+        this.setText('rect-dcOpCurRect', typeof avgRectCur !== 'undefined' ? avgRectCur.toFixed(2) : (this.state.dcOpCurRect / 10).toFixed(2));
         this.setText('rect-outputPowerRect', this.state.outputPowerRect);
 
         // Temporary fix for demonstration: PFC, LLC, SR use Ambient + 1 or 2 deg offset
@@ -506,9 +525,8 @@ class DashboardApp {
         this.setText('mppt-acIpVoltageMppt', this.state.acIpVoltageMppt);
 
         // Temporary fix for demonstration: calculated MPPT input current (1.05 * Vout * Iout / Vin)
-        // this.setText('mppt-acIpCurMppt', this.state.acIpCurMppt);
         const mpptTempVout = this.state.dcOpVoltageMppt / 1;
-        const mpptTempIout = this.state.dcOpCurMppt / 10;
+        const mpptTempIout = mpptCurNum; // Use actual calculated I from topology section
         const mpptTempVin = parseFloat(this.state.acIpVoltageMppt) || 1; // Fallback to avoid div by zero
         const calcMpptIpCur = (1.05 * mpptTempVout * mpptTempIout) / mpptTempVin;
         this.setText('mppt-acIpCurMppt', this.state.acIpVoltageMppt > 0 ? calcMpptIpCur.toFixed(2) : '0.00');
